@@ -2,16 +2,45 @@ import { motion } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import { ContactLinks } from "./ContactLinks";
 import { TypeAnimation } from 'react-type-animation';
-import Particles from "react-tsparticles";
-import { loadFull } from "tsparticles";
-import { useCallback } from "react";
-import type { Engine } from "tsparticles-engine";
-import { ChevronDown } from "lucide-react";
+import { useState, useEffect } from "react";  // Add useEffect
+import { ChevronDown, Code2 } from "lucide-react";
 
 export const Hero = () => {
-  const particlesInit = useCallback(async (engine: Engine) => {
-    await loadFull(engine);
-  }, []);
+  const [showCode, setShowCode] = useState(false);
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [metrics, setMetrics] = useState({
+    cpu: 28,
+    throughput: 92,
+    cacheHit: 98,
+    connections: 65,
+    eviction: 0.001
+  });
+
+  const [isHovering, setIsHovering] = useState(false);
+
+  // Update time and metrics periodically
+  useEffect(() => {
+    if (!showCode && !isHovering) return;
+
+    const timeInterval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+
+    const metricsInterval = setInterval(() => {
+      setMetrics(prev => ({
+        cpu: Math.min(95, Math.max(20, prev.cpu + (Math.random() - 0.5) * 10)),
+        throughput: Math.min(95, Math.max(60, prev.throughput + (Math.random() - 0.5) * 5)),
+        cacheHit: Math.min(99, Math.max(85, prev.cacheHit + (Math.random() - 0.5) * 2)),
+        connections: Math.min(95, Math.max(70, prev.connections + (Math.random() - 0.5) * 5)),
+        eviction: Math.max(0, Math.min(0.1, prev.eviction + (Math.random() - 0.5) * 0.01))
+      }));
+    }, 2000);
+
+    return () => {
+      clearInterval(timeInterval);
+      clearInterval(metricsInterval);
+    };
+  }, [showCode, isHovering]);
 
   const scrollToProjects = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
@@ -24,38 +53,39 @@ export const Hero = () => {
     }
   };
 
+  const codeSnippet = `import { skills } from "./skills.json";
+  
+function generateSequence() {  
+  try {
+    return skills.map(skill => ({
+      text: enhance(skill),
+      delay: 1000
+    }));
+  } catch (e) {
+    return {
+      status: 418,
+      retry_after: "caffeine.replenish()"
+    }
+  }
+}`;
+
+  const getFormattedTime = (date: Date) => {
+    return date.toISOString().replace('T', ' ').slice(0, 19);
+  };
+
+  const serverLogs = `[INFO] ${getFormattedTime(currentTime)} AWS::ECS::Service - Container deployment completed successfully
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 1000))} AWS::CloudWatch - CPU utilization: ${metrics.cpu.toFixed(1)}%
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 2000))} AWS::Lambda - Function cold start: 85ms
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 3000))} AWS::EC2 - System health: Optimal
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 4000))} AWS::ApiGateway - Request rate: 2500 req/s
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 5000))} AWS::DynamoDB - Provisioned throughput: ${metrics.throughput.toFixed(1)}%
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 6000))} AWS::CloudFront - Cache hit ratio: ${metrics.cacheHit.toFixed(1)}%
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 7000))} AWS::RDS - Database connections: ${metrics.connections.toFixed(0)}/100
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 8000))} AWS::SQS - Average message processing time: 45ms
+  [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 9000))} AWS::ElastiCache - Cache eviction: ${metrics.eviction.toFixed(3)}%`;
+
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
-      <Particles
-        className="absolute inset-0 -z-10"
-        init={particlesInit}
-        options={{
-          particles: {
-            number: { value: 30, density: { enable: true, value_area: 800 } },
-            color: { value: ["#3A7570", "#2F5F5A"] },  // Updated to theme green colors
-            opacity: { 
-              value: 0.2,
-              random: true,
-              anim: { enable: true, speed: 0.5, opacity_min: 0.1 }
-            },
-            size: { value: 3 },
-            move: { enable: true, speed: 1, direction: "none" },
-            line_linked: { 
-              enable: true, 
-              distance: 150, 
-              color: "#3A7570",  // Updated to primary green
-              opacity: 0.1,
-              width: 1
-            }
-          },
-          interactivity: {
-            events: {
-              onhover: { enable: true, mode: "repulse" },
-              onclick: { enable: true, mode: "push" }
-            }
-          }
-        }}
-      />
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-slate-900/95 dark:to-slate-800/95 sepia:from-[#fdf6e3]/90 sepia:to-[#faf7ed]/90 -z-10" />
       <ContactLinks />
       <ThemeToggle />
@@ -70,30 +100,106 @@ export const Hero = () => {
             initial={{ scale: 0.5, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="mb-8"
+            className="mb-8 cursor-pointer"
+            onClick={() => setShowCode(prev => !prev)}
           >
             <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700">
               Hi, I'm Jethro!
             </h1>
             <div className="h-1 w-24 mx-auto bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700 rounded-full" />
           </motion.div>
-          
-          <div className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 sepia:text-amber-900 mb-12 max-w-2xl mx-auto h-20">
-            <TypeAnimation
-              sequence={[
-                'I build scalable and performant applications',
-                1000,
-                'My UX is always pretty',
-                1000,
-                'I build to ship, and adapt quickly',
-                1000,
-                'I teach and mentor others',
-                1000
-              ]}
-              wrapper="span"
-              speed={70}
-              repeat={Infinity}
-            />
+
+          <div className="relative">
+            <div 
+              className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto h-20 cursor-pointer" 
+              onClick={() => setShowCode(prev => !prev)}
+            >
+              <TypeAnimation
+                sequence={[
+                  'I build scalable and performant applications',
+                  1000,
+                  'I craft beautiful user interfaces',
+                  1000,
+                  'I build to ship, and adapt quickly',
+                  1000,
+                  'I teach and mentor others',
+                  1000
+                ]}
+                wrapper="span"
+                speed={70}
+                repeat={Infinity}
+              />
+            </div>
+
+            {showCode && (
+              <motion.div
+                initial={{ opacity: 0, y: -20, height: 0 }}
+                animate={{ opacity: 1, y: 0, height: 'auto' }}
+                exit={{ opacity: 0, y: -20, height: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative mx-auto mb-12"
+              >
+                <div className="grid grid-cols-2 gap-4">
+                  <motion.pre
+                    className="text-left bg-black/80 backdrop-blur-sm rounded-lg p-6 font-mono text-sm text-green-400 overflow-x-auto"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.2 }}
+                  >
+                    <TypeAnimation
+                      sequence={[codeSnippet]}
+                      wrapper="span"
+                      speed={70}
+                      cursor={true}
+                    />
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="absolute right-4 top-4 text-primary/60 group-hover:text-primary transition-colors"
+                    >
+                      <Code2 size={20} />
+                    </motion.div>
+                  </motion.pre>
+
+                  <motion.pre
+                    className="relative text-left bg-black/80 backdrop-blur-sm rounded-lg overflow-hidden"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ delay: 0.4 }}
+                  >
+                    <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800/50 rounded-t-lg flex items-center px-4">
+                      <div className="flex gap-1.5 absolute left-4">
+                        <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                        <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                        <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                      </div>
+                      <div className="flex-1 text-center text-gray-400 text-sm">AWS Cloud Console</div>
+                    </div>
+                    <div className="mt-8 p-6 space-y-1 max-w-[600px]">
+                      {serverLogs.split('\n').map((line, index) => (
+                        <motion.div 
+                          key={index}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ 
+                            delay: index * 0.1,
+                            duration: 0.3
+                          }}
+                          className={`font-mono text-sm ${
+                            line.includes('[WARN]') 
+                              ? 'text-yellow-400' 
+                              : 'text-gray-300'
+                          } hover:whitespace-normal hover:break-words`}
+                        >
+                          {line.trim()}
+                        </motion.div>
+                      ))}
+                      <div className="inline-block w-2 h-4 bg-gray-400 animate-pulse" />
+                    </div>
+                  </motion.pre>
+                </div>
+              </motion.div>
+            )}
           </div>
 
           <motion.div
