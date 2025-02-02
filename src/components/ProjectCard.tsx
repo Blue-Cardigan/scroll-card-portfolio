@@ -5,9 +5,10 @@ interface ProjectCardProps {
   description: string;
   image: string;
   index: number;
+  id: string;
 }
 
-export const ProjectCard = ({ title, description, image, index }: ProjectCardProps) => {
+export const ProjectCard = ({ title, description, image, index, id }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -41,10 +42,16 @@ export const ProjectCard = ({ title, description, image, index }: ProjectCardPro
     };
   }, []);
 
+  const handleClick = () => {
+    const element = document.getElementById(id);
+    element?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   return (
     <div
       ref={cardRef}
-      className="parallax-card glass-card rounded-xl p-6 transition-all duration-200 ease-out"
+      onClick={handleClick}
+      className="parallax-card glass-card rounded-xl p-6 transition-all duration-200 ease-out cursor-pointer"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
       <div className="relative h-48 mb-6 overflow-hidden rounded-lg">

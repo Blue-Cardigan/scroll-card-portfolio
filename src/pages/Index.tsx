@@ -2,19 +2,23 @@ import { Hero } from "../components/Hero";
 import { ProjectCard } from "../components/ProjectCard";
 import { About } from "../components/About";
 import { Skills } from "../components/Skills";
+import { ProjectSection } from "../components/ProjectSection";
 
 const projects = [
   {
+    id: "ecommerce",
     title: "E-commerce Platform",
     description: "A modern e-commerce solution built with React and Node.js",
     image: "https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2089&q=80",
   },
   {
+    id: "dashboard",
     title: "Social Media Dashboard",
     description: "Analytics dashboard with real-time data visualization",
     image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80",
   },
   {
+    id: "chat",
     title: "AI Chat Application",
     description: "Real-time chat app powered by artificial intelligence",
     image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
@@ -39,6 +43,11 @@ const Index = () => {
 
       <About />
       <Skills />
+
+      {/* Detailed Project Sections */}
+      {projects.map((project) => (
+        <ProjectSection key={project.id} {...project} />
+      ))}
     </div>
   );
 };
