@@ -6,25 +6,25 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 160 34% 18%;  /* Based on themes.light.background */
+    --foreground: 0 0% 10%;     /* Based on themes.light.text */
     --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card-foreground: 0 0% 10%;
     --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
-    --primary: 221.2 83.2% 53.3%;
-    --primary-foreground: 210 40% 98%;
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 174 37% 35%;     /* Based on themes.light.primary (#3A7570) */
+    --primary-foreground: 0 0% 100%;
+    --secondary: 174 33% 28%;   /* Based on themes.light.secondary (#2F5F5A) */
+    --secondary-foreground: 0 0% 100%;
+    --muted: 165 47% 89%;      /* Based on themes.light.muted (#D6F1EB) */
+    --muted-foreground: 174 37% 35%;
+    --accent: 168 100% 33%;    /* Based on themes.light.accent (#00A884) */
+    --accent-foreground: 0 0% 100%;
     --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 221.2 83.2% 53.3%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 165 47% 89%;     /* Using muted color for subtle borders */
+    --input: 165 47% 89%;
+    --ring: 174 37% 35%;       /* Using primary color for focus rings */
     --radius: 0.5rem;
   }
 

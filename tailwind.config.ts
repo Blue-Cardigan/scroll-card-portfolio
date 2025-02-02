@@ -56,14 +56,14 @@ export default {
           light: {
             background: "#ffffff",
             text: "#1a1a1a",
-            primary: "#2563eb",    // Blue 600
-            secondary: "#4f46e5",  // Indigo 600
-            accent: "#3b82f6",     // Blue 500
-            muted: "#64748b",      // Slate 500
+            primary: "#3A7570",    // Green 
+            secondary: "#2F5F5A",  // Dark Green 
+            accent: "#00A884",     // Light Green
+            muted: "#D6F1EB",      // Pale Green
             surface: "#f8fafc"     // Slate 50
           },
           dark: {
-            background: "#0f172a",   // Slate 900
+            background: "#1F3F3A",   // Very Dark Green
             text: "#e2e8f0",         // Slate 200
             primary: "#3b82f6",      // Blue 500
             secondary: "#6366f1",    // Indigo 500

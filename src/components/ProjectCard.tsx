@@ -64,9 +64,9 @@ export const ProjectCard = ({ title, url, description, image, index, id }: Proje
         />
       </div>
       <a href={url} target="_blank" rel="noopener noreferrer" className="block">
-        <h3 className="text-xl font-semibold mb-2 hover:text-blue-500 transition-colors">{title}</h3>
+        <h3 className="text-xl font-semibold mb-2 hover:text-primary transition-colors">{title}</h3>
       </a>
-      <p className="text-gray-600">{description}</p>
+      <p className="text-muted-foreground">{description}</p>
     </div>
   );
 };

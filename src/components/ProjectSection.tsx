@@ -51,16 +51,16 @@ export const ProjectSection = ({ title, description, image, id, features, url }:
                   href={url} 
                   target="_blank" 
                   rel="noopener noreferrer" 
-                  className="group inline-flex items-center gap-2 hover:text-blue-500 dark:hover:text-blue-400 sepia:hover:text-orange-700 transition-colors"
+                  className="group inline-flex items-center gap-2 hover:text-primary dark:hover:text-primary sepia:hover:text-orange-700 transition-colors"
                 >
-                  <h3 className="text-2xl font-bold">{title}</h3>
+                  <h3 className="text-2xl font-bold dark:text-gray-400 dark-hover:text-white">{title}</h3>
                   <ChevronRight className="opacity-0 group-hover:opacity-100 transition-opacity" size={20} />
                 </a>
-                <p className="text-gray-600 dark:text-gray-300 sepia:text-amber-900 mt-4 mb-6 leading-relaxed">
+                <p className="text-muted-foreground dark:text-gray-300 sepia:text-amber-900 mt-4 mb-6 leading-relaxed">
                   {description}
                 </p>
                 <div className="space-y-4">
-                  <h4 className="font-semibold text-gray-800 dark:text-gray-200 sepia:text-amber-800">
+                  <h4 className="font-semibold text-foreground dark:text-gray-200 sepia:text-amber-800">
                     Key Features:
                   </h4>
                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
@@ -71,9 +71,9 @@ export const ProjectSection = ({ title, description, image, id, features, url }:
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.3, delay: 0.1 * index }}
                         viewport={{ once: true }}
-                        className="flex items-start gap-2 text-gray-600 dark:text-gray-300 sepia:text-amber-900"
+                        className="flex items-start gap-2 text-muted-foreground dark:text-gray-300 sepia:text-amber-900"
                       >
-                        <ChevronRight size={16} className="mt-1 flex-shrink-0 text-blue-500 dark:text-blue-400 sepia:text-orange-700" />
+                        <ChevronRight size={16} className="mt-1 flex-shrink-0 text-primary dark:text-primary sepia:text-orange-700" />
                         <span>{feature}</span>
                       </motion.li>
                     ))}

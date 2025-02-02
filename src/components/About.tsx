@@ -24,13 +24,13 @@ export const About = () => {
               />
               <div>
                 <p className="text-lg text-gray-600 mb-6">
-                  I'm a fullstack developer with high agency, a strong backend foundation, and keen eye for design. 
+                  I'm a high-agency fullstack developer with a strong backend foundation and keen eye for design. 
                 </p>
                 <p className="text-lg text-gray-600 mb-6">
                 Through contract and personal work, I've bootstrapped applications and boosted teams with Python, JS, and SQL using Express, Node.js, Vercel, Django, Flask, Firebase, and AWS.
                 </p>
                 <p className="text-lg text-gray-600 mb-6">
-                I work fast alone and love the dynamic of a strong team.
+                I work fast alone and thrive in a strong team dynamic.
                 </p>
               </div>
             </div>

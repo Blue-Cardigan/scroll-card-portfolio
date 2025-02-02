@@ -31,7 +31,7 @@ export const ThemeToggle = () => {
       <button
         onClick={() => toggleTheme('light')}
         className={`p-2 rounded-full transition-colors ${
-          theme === 'light' ? 'bg-blue-100 text-blue-600' : 'hover:bg-slate-100 dark:hover:bg-slate-700 sepia:hover:bg-orange-50'
+          theme === 'light' ? 'bg-primary/10 text-primary' : 'hover:bg-primary/10 dark:hover:bg-primary/20 sepia:hover:bg-orange-50'
         }`}
         aria-label="Light mode"
       >
@@ -40,7 +40,7 @@ export const ThemeToggle = () => {
       <button
         onClick={() => toggleTheme('dark')}
         className={`p-2 rounded-full transition-colors ${
-          theme === 'dark' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+          theme === 'dark' ? 'bg-primary/10 text-primary' : 'hover:bg-primary/10 dark:hover:bg-primary/20'
         }`}
         aria-label="Dark mode"
       >
@@ -49,7 +49,7 @@ export const ThemeToggle = () => {
       <button
         onClick={() => toggleTheme('sepia')}
         className={`p-2 rounded-full transition-colors ${
-          theme === 'sepia' ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700'
+          theme === 'sepia' ? 'bg-primary/10 text-primary' : 'hover:bg-primary/10 dark:hover:bg-primary/20'
         }`}
         aria-label="Sepia mode"
       >

@@ -32,7 +32,7 @@ export const Hero = () => {
         options={{
           particles: {
             number: { value: 30, density: { enable: true, value_area: 800 } },
-            color: { value: ["#6366f1", "#3b82f6"] },
+            color: { value: ["#3A7570", "#2F5F5A"] },  // Updated to theme green colors
             opacity: { 
               value: 0.2,
               random: true,
@@ -43,7 +43,7 @@ export const Hero = () => {
             line_linked: { 
               enable: true, 
               distance: 150, 
-              color: "#6366f1", 
+              color: "#3A7570",  // Updated to primary green
               opacity: 0.1,
               width: 1
             }
@@ -72,10 +72,10 @@ export const Hero = () => {
             transition={{ duration: 0.5 }}
             className="mb-8"
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 sepia:from-orange-700 sepia:to-amber-700">
+            <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700">
               Hi, I'm Jethro!
             </h1>
-            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400 sepia:from-orange-700 sepia:to-amber-700 rounded-full" />
+            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700 rounded-full" />
           </motion.div>
           
           <div className="text-xl md:text-2xl text-gray-600 dark:text-gray-300 sepia:text-amber-900 mb-12 max-w-2xl mx-auto h-20">
@@ -83,9 +83,9 @@ export const Hero = () => {
               sequence={[
                 'I build scalable and performant applications',
                 1000,
-                'I craft pretty user interfaces',
-                1000,
                 'I build to ship, and adapt quickly',
+                1000,
+                'My user interfaces are always pretty',
                 1000,
                 'I teach and mentor others',
                 1000
@@ -105,7 +105,7 @@ export const Hero = () => {
             <motion.a
               href="#projects"
               onClick={scrollToProjects}
-              className="group relative inline-flex items-center gap-2 px-8 py-3 bg-blue-600 dark:bg-blue-500 sepia:bg-orange-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+              className="group relative inline-flex items-center gap-2 px-8 py-3 bg-primary dark:bg-primary sepia:bg-orange-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
