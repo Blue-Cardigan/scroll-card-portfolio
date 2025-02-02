@@ -9,7 +9,7 @@ const projects = [
     id: "whatgov",
     title: "WhatGov - Political Monitoring Platform",
     description: "Full-stack application with individual and enterprise tiers for public political monitoring. Features modern UI/UX, daily data processing pipeline using Government APIs, and OpenAI integration.",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    image: "https://whatgov.co.uk/og-image.png",
     features: [
       "Supabase Backend with RPC Functions",
       "Indexed Database Tables",
@@ -21,14 +21,14 @@ const projects = [
   {
     id: "flood-defence",
     title: "Flood Defence - Department for Business & Trade",
-    description: "Team project developed at Coefficient, combining React frontend with Python backend, hosted on AWS infrastructure.",
-    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    description: "Team project developed at Coefficient, combining React frontend with Python backend, hosted on AWS infrastructure. Features GraphQL APIs and rapid delivery using ACE methodology.",
+    image: "https://coefficient.ai/og-image.png",
     features: [
+      "GraphQL Static & Dynamic APIs",
       "React Frontend",
       "Python Backend",
       "AWS Infrastructure",
-      "Team Collaboration",
-      "Government Client Integration"
+      "Lean Team Rapid Delivery"
     ]
   },
   {
@@ -47,14 +47,14 @@ const projects = [
   {
     id: "election-forecast",
     title: "UK Election Forecasting Dashboard",
-    description: "Machine Learning Platform and Data Dashboard for private clients with secure login system and specialized audience access.",
+    description: "Machine Learning Platform using Multilinear Regression with Poststratification (MLP) and interactive Plotly diagrams for private clients.",
     image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
     features: [
+      "Multilinear Regression",
+      "Poststratification Analysis",
+      "Interactive Plotly Charts",
       "Secure Authentication",
-      "MLP Implementation",
-      "Interactive Dashboard",
-      "Private Access Control",
-      "Real-time Updates"
+      "Private Access Control"
     ]
   },
   {
