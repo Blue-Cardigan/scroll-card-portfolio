@@ -83,9 +83,9 @@ export const Hero = () => {
               sequence={[
                 'I build scalable and performant applications',
                 1000,
-                'I build to ship, and adapt quickly',
+                'My UX is always pretty',
                 1000,
-                'My user interfaces are always pretty',
+                'I build to ship, and adapt quickly',
                 1000,
                 'I teach and mentor others',
                 1000

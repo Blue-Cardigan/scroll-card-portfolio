@@ -10,7 +10,7 @@ const projects = [
     id: "whatgov",
     url: "https://whatgov.co.uk",
     title: "WhatGov - Political Monitoring Platform",
-    description: "Full-stack application with individual and enterprise tiers for public political monitoring. Features modern UI/UX, daily data processing pipeline using Government APIs, and OpenAI integration.",
+    description: "Full-stack application for easy political monitoring, with individual and enterprise tiers and full SEO. Features modern UI/UX, daily data processing pipeline using Government APIs, Github Actions, and OpenAI integration.",
     image: "/whatgov-screenshot.png",
     features: [
       "Supabase Backend with RPC Functions",
@@ -24,7 +24,7 @@ const projects = [
     id: "flood-defence",
     title: "Flood Defence - Department for Business & Trade",
     url: "https://coefficient.ai",
-    description: "Team project developed with Coefficient on ACE commission, working with highly experienced developers combining React frontend with Python backend, hosted on AWS infrastructure. Security-oriented platform with sizable codebase.",
+    description: "Tailwind/Python security-oriented platform with sizable codebase hosted on AWS infrastructure. Revamped for open-source while teamed with highly experienced Coefficient team on ACE commission.",
     image: "https://cdn.asp.events/CLIENT_Informa__AADDE28D_5056_B739_5481D63BF875B0DF/sites/london-tech-week-2024/media/sponsor-logos/coefficient-logo-square---favicon-transparent.png/fit-in/200x200/filters:no_upscale()?mm&v=E54731138910C4AFAD26F48E30AA0C50CCB95048",
     features: [
       "GraphQL Static & Dynamic APIs",
