@@ -3,13 +3,15 @@ import { ProjectCard } from "../components/ProjectCard";
 import { About } from "../components/About";
 import { Skills } from "../components/Skills";
 import { ProjectSection } from "../components/ProjectSection";
+import { Footer } from "../components/Footer";
 
 const projects = [
   {
     id: "whatgov",
+    url: "https://whatgov.co.uk",
     title: "WhatGov - Political Monitoring Platform",
     description: "Full-stack application with individual and enterprise tiers for public political monitoring. Features modern UI/UX, daily data processing pipeline using Government APIs, and OpenAI integration.",
-    image: "https://whatgov.co.uk/og-image.png",
+    image: "/whatgov-screenshot.png",
     features: [
       "Supabase Backend with RPC Functions",
       "Indexed Database Tables",
@@ -21,10 +23,12 @@ const projects = [
   {
     id: "flood-defence",
     title: "Flood Defence - Department for Business & Trade",
-    description: "Team project developed at Coefficient, combining React frontend with Python backend, hosted on AWS infrastructure. Features GraphQL APIs and rapid delivery using ACE methodology.",
-    image: "https://coefficient.ai/og-image.png",
+    url: "https://coefficient.ai",
+    description: "Team project developed with Coefficient on ACE commission, working with highly experienced developers combining React frontend with Python backend, hosted on AWS infrastructure. Security-oriented platform with sizable codebase.",
+    image: "https://cdn.asp.events/CLIENT_Informa__AADDE28D_5056_B739_5481D63BF875B0DF/sites/london-tech-week-2024/media/sponsor-logos/coefficient-logo-square---favicon-transparent.png/fit-in/200x200/filters:no_upscale()?mm&v=E54731138910C4AFAD26F48E30AA0C50CCB95048",
     features: [
       "GraphQL Static & Dynamic APIs",
+      "Custom proxy solution",
       "React Frontend",
       "Python Backend",
       "AWS Infrastructure",
@@ -35,7 +39,7 @@ const projects = [
     id: "crm",
     title: "MP Office Casework Management CRM",
     description: "Automated casework management system using Airtable and Make.com, streamlining MP office workflows and email processing.",
-    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    image: "/airtable-make.png",
     features: [
       "Outlook Email Integration",
       "Automated Case Processing",
@@ -47,8 +51,9 @@ const projects = [
   {
     id: "election-forecast",
     title: "UK Election Forecasting Dashboard",
-    description: "Machine Learning Platform using Multilinear Regression with Poststratification (MLP) and interactive Plotly diagrams for private clients.",
-    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    url: "https://polling-dashboard-357215153feb.herokuapp.com/",
+    description: "Data Visualization Platform showing forecasts using private polling data. Forecasts used industry gold-standard Multilinear Regression with Poststratification (MLP) and display using interactive Plotly diagrams.",
+    image: "/forecast.png",
     features: [
       "Multilinear Regression",
       "Poststratification Analysis",
@@ -60,8 +65,9 @@ const projects = [
   {
     id: "ai-workshops",
     title: "AI for Campaigners Workshops",
+    url: "https://community.socialmovementtechnologies.org/courses/ai-for-social-justice-groups/",
     description: "Comprehensive 2-hour workshops on LLMs and practical AI applications, delivered to 100+ participants across US, Europe, and Africa.",
-    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+    image: "/workshop.png",
     features: [
       "LLM Technology Overview",
       "Practical Applications",
@@ -73,12 +79,14 @@ const projects = [
   {
     id: "nlp-analysis",
     title: "Substack Thematic Analysis",
-    description: "NLP-based content analysis using advanced topic modeling techniques including LDA, LSA, and TF-IDF.",
-    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    url: "https://docs.google.com/document/d/11-uRdydGrtRTm7uXXd5LcwEUNAw18Pl6RTqrbhIN0Qc/edit?usp=sharing",
+    description: "NLP-based content analysis using advanced topic modeling techniques including TFIDF, LDA, and LLM classification.",
+    image: "/lda.png",
     features: [
+      "Modified Z-Score ranking",
+      "TFIDF Processing",
       "LDA Implementation",
-      "LSA Analysis",
-      "TF-IDF Processing",
+      "LLM Classification",
       "Topic Modeling",
       "Content Insights"
     ]
@@ -87,15 +95,20 @@ const projects = [
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white">
+    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 sepia:from-[#fdf6e3] sepia:to-[#faf7ed]">
       <Hero />
       
       <section id="projects" className="py-20">
         <div className="container px-4 mx-auto">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Featured Projects</h2>
+          <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center text-slate-900 dark:text-slate-100 sepia:text-orange-900">Featured</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <ProjectCard key={project.id} {...project} index={index} />
+              <ProjectCard 
+                key={project.id} 
+                {...project} 
+                index={index}
+                url={project.url || ''}
+              />
             ))}
           </div>
         </div>
@@ -106,8 +119,9 @@ const Index = () => {
 
       {/* Detailed Project Sections */}
       {projects.map((project) => (
-        <ProjectSection key={project.id} {...project} />
+        <ProjectSection key={project.id} {...project} url={project.url || ''} />
       ))}
+      <Footer />
     </div>
   );
 };

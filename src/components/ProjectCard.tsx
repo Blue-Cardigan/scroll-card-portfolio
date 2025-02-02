@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react';
 
 interface ProjectCardProps {
   title: string;
+  url: string;
   description: string;
   image: string;
   index: number;
@@ -9,7 +10,7 @@ interface ProjectCardProps {
   features: string[];
 }
 
-export const ProjectCard = ({ title, description, image, index, id }: ProjectCardProps) => {
+export const ProjectCard = ({ title, url, description, image, index, id }: ProjectCardProps) => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -62,7 +63,9 @@ export const ProjectCard = ({ title, description, image, index, id }: ProjectCar
           className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
         />
       </div>
-      <h3 className="text-xl font-semibold mb-2">{title}</h3>
+      <a href={url} target="_blank" rel="noopener noreferrer" className="block">
+        <h3 className="text-xl font-semibold mb-2 hover:text-blue-500 transition-colors">{title}</h3>
+      </a>
       <p className="text-gray-600">{description}</p>
     </div>
   );

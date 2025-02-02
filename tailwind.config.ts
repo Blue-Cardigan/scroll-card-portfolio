@@ -52,6 +52,35 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
+        themes: {
+          light: {
+            background: "#ffffff",
+            text: "#1a1a1a",
+            primary: "#2563eb",    // Blue 600
+            secondary: "#4f46e5",  // Indigo 600
+            accent: "#3b82f6",     // Blue 500
+            muted: "#64748b",      // Slate 500
+            surface: "#f8fafc"     // Slate 50
+          },
+          dark: {
+            background: "#0f172a",   // Slate 900
+            text: "#e2e8f0",         // Slate 200
+            primary: "#3b82f6",      // Blue 500
+            secondary: "#6366f1",    // Indigo 500
+            accent: "#60a5fa",       // Blue 400
+            muted: "#94a3b8",        // Slate 400
+            surface: "#1e293b"       // Slate 800
+          },
+          sepia: {
+            background: "#fdf6e3",   // Warm white
+            text: "#433422",         // Deep brown
+            primary: "#9a3412",      // Orange 800
+            secondary: "#b45309",    // Amber 800
+            accent: "#c2410c",       // Orange 700
+            muted: "#78716c",        // Stone 500
+            surface: "#faf7ed"       // Warmer white
+          }
+        }
       },
       keyframes: {
         "accordion-down": {
