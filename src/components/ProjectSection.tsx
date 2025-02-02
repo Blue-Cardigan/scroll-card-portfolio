@@ -5,9 +5,10 @@ interface ProjectSectionProps {
   description: string;
   image: string;
   id: string;
+  features: string[];
 }
 
-export const ProjectSection = ({ title, description, image, id }: ProjectSectionProps) => {
+export const ProjectSection = ({ title, description, image, id, features }: ProjectSectionProps) => {
   return (
     <section id={id} className="py-20 scroll-mt-20">
       <div className="container px-4 mx-auto">
@@ -32,9 +33,9 @@ export const ProjectSection = ({ title, description, image, id }: ProjectSection
               <div className="space-y-4">
                 <h4 className="font-semibold">Key Features:</h4>
                 <ul className="list-disc list-inside text-gray-600 space-y-2">
-                  <li>Responsive Design</li>
-                  <li>Modern UI/UX</li>
-                  <li>Performance Optimized</li>
+                  {features.map((feature, index) => (
+                    <li key={index}>{feature}</li>
+                  ))}
                 </ul>
               </div>
             </div>

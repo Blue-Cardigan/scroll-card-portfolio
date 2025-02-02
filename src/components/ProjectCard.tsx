@@ -6,6 +6,7 @@ interface ProjectCardProps {
   image: string;
   index: number;
   id: string;
+  features: string[];
 }
 
 export const ProjectCard = ({ title, description, image, index, id }: ProjectCardProps) => {

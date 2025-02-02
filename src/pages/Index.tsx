@@ -6,23 +6,83 @@ import { ProjectSection } from "../components/ProjectSection";
 
 const projects = [
   {
-    id: "ecommerce",
-    title: "E-commerce Platform",
-    description: "A modern e-commerce solution built with React and Node.js",
-    image: "https://images.unsplash.com/photo-1557821552-17105176677c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2089&q=80",
+    id: "whatgov",
+    title: "WhatGov - Political Monitoring Platform",
+    description: "Full-stack application with individual and enterprise tiers for public political monitoring. Features modern UI/UX, daily data processing pipeline using Government APIs, and OpenAI integration.",
+    image: "https://images.unsplash.com/photo-1518770660439-4636190af475",
+    features: [
+      "Supabase Backend with RPC Functions",
+      "Indexed Database Tables",
+      "OpenAI API Integration",
+      "Github Actions Workflow",
+      "Enterprise & Individual Tiers"
+    ]
   },
   {
-    id: "dashboard",
-    title: "Social Media Dashboard",
-    description: "Analytics dashboard with real-time data visualization",
-    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2015&q=80",
+    id: "flood-defence",
+    title: "Flood Defence - Department for Business & Trade",
+    description: "Team project developed at Coefficient, combining React frontend with Python backend, hosted on AWS infrastructure.",
+    image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6",
+    features: [
+      "React Frontend",
+      "Python Backend",
+      "AWS Infrastructure",
+      "Team Collaboration",
+      "Government Client Integration"
+    ]
   },
   {
-    id: "chat",
-    title: "AI Chat Application",
-    description: "Real-time chat app powered by artificial intelligence",
-    image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80",
+    id: "crm",
+    title: "MP Office Casework Management CRM",
+    description: "Automated casework management system using Airtable and Make.com, streamlining MP office workflows and email processing.",
+    image: "https://images.unsplash.com/photo-1488590528505-98d2b5aba04b",
+    features: [
+      "Outlook Email Integration",
+      "Automated Case Processing",
+      "Workflow Management",
+      "Airtable Database",
+      "Make.com Automation"
+    ]
   },
+  {
+    id: "election-forecast",
+    title: "UK Election Forecasting Dashboard",
+    description: "Machine Learning Platform and Data Dashboard for private clients with secure login system and specialized audience access.",
+    image: "https://images.unsplash.com/photo-1487058792275-0ad4aaf24ca7",
+    features: [
+      "Secure Authentication",
+      "MLP Implementation",
+      "Interactive Dashboard",
+      "Private Access Control",
+      "Real-time Updates"
+    ]
+  },
+  {
+    id: "ai-workshops",
+    title: "AI for Campaigners Workshops",
+    description: "Comprehensive 2-hour workshops on LLMs and practical AI applications, delivered to 100+ participants across US, Europe, and Africa.",
+    image: "https://images.unsplash.com/photo-1605810230434-7631ac76ec81",
+    features: [
+      "LLM Technology Overview",
+      "Practical Applications",
+      "International Delivery",
+      "100+ Participants",
+      "Hands-on Exercises"
+    ]
+  },
+  {
+    id: "nlp-analysis",
+    title: "Substack Thematic Analysis",
+    description: "NLP-based content analysis using advanced topic modeling techniques including LDA, LSA, and TF-IDF.",
+    image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158",
+    features: [
+      "LDA Implementation",
+      "LSA Analysis",
+      "TF-IDF Processing",
+      "Topic Modeling",
+      "Content Insights"
+    ]
+  }
 ];
 
 const Index = () => {
@@ -35,7 +95,7 @@ const Index = () => {
           <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center">Featured Projects</h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {projects.map((project, index) => (
-              <ProjectCard key={index} {...project} index={index} />
+              <ProjectCard key={project.id} {...project} index={index} />
             ))}
           </div>
         </div>
