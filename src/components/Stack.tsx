@@ -6,6 +6,7 @@ import {
   FaAws, 
   FaDocker
 } from "react-icons/fa";
+import { RiBrainFill } from "react-icons/ri";
 import { 
   SiTypescript, 
   SiSupabase, 
@@ -19,6 +20,7 @@ import {
   SiMapbox,
   SiApollographql,
   SiVercel,
+  SiLangchain,
 } from "react-icons/si";
 import { BsWindowStack, BsServer, BsGear } from "react-icons/bs";
 import { useState } from "react";
@@ -26,23 +28,34 @@ import { useState } from "react";
 const systems = {
   "whatgov": {
     name: "WhatGov",
-    stack: ["Supabase", "Next.js", "TypeScript", "React", "Node.js", "Vercel", "Tailwind", "Redis", "Firebase"],
+    stack: ["Supabase", "Next.js", "TypeScript", "React", "Node.js", "Vercel", "Tailwind", "Redis", "Stripe"],
     systems: [
       "OAuth2 with emails",
       "Profile management & preference collection",
       "Daily data processing pipeline",
       "OpenAI integration",
+      "Stripe subscription management",
       "Enterprise user management"
     ]
   },
   "flood-defence": {
     name: "Flood Defence",
-    stack: ["Python", "React", "AWS", "GraphQL", "Docker", "Tailwind", "Apollo Client", "Mapbox GL", "Django"],
+    stack: ["TypeScript", "Python", "React", "AWS", "GraphQL", "Docker", "Tailwind", "Apollo Client", "Mapbox GL", "Django"],
     systems: [
       "GraphQL API with Ariadne",
       "Custom proxy solution",
       "AWS infrastructure (ECS, RDS, S3)",
       "Security-oriented architecture"
+    ]
+  },
+  "tuc-chatbot": {
+    name: "TUC Training Chatbot",
+    stack: ["Vercel", "Supabase", "Next.js", "Tailwind"],
+    systems: [
+      "AI-powered chat interface",
+      "Training content integration",
+      "User session management",
+      "Response optimization"
     ]
   },
   "election-forecast": {
@@ -54,7 +67,35 @@ const systems = {
       "PostgreSQL integration",
       "Secure data visualization"
     ]
-  }
+  },
+  "sms-chatbot": {
+    name: "SMS AI Chatbot",
+    stack: ["Firebase", "Twilio"],
+    systems: [
+      "Automated messaging system",
+      "Community engagement features",
+      "AI response handling"
+    ]
+  },
+  "easymail": {
+    name: "EasyMail",
+    stack: ["Firebase", "Supabase"],
+    systems: [
+      "Automated letter writing",
+      "Non-profit integration",
+      "Campaign management"
+    ]
+  },
+  "electoral-commission-bot": {
+    name: "Electoral Commission ChatBot",
+    stack: ["Pinecone", "Langchain", "Heroku"],
+    systems: [
+      "Vector database integration",
+      "RAG implementation",
+      "Electoral guidance AI assistant",
+      "Document embeddings"
+    ]
+  },
 };
 
 const stack = [
@@ -74,11 +115,11 @@ const stack = [
     category: "Backend",
     icon: BsServer,
     items: [
-      { name: "Python", icon: FaPython, color: "#3776AB" },
-      { name: "Node.js", icon: FaNodeJs, color: "#339933" },
       { name: "Django", icon: SiDjango, color: "#092E20" },
       { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
       { name: "Redis", icon: SiRedis, color: "#DC382D" },
+      { name: "Pinecone", icon: RiBrainFill, color: "#000000" },
+      { name: "Langchain", icon: SiLangchain, color: "#3178C6" },
     ]
   },
   {
@@ -108,6 +149,8 @@ export const Stack = () => {
           project: projectData.name,
           systems: projectData.systems
         });
+        // Break after 2 projects to avoid overspill
+        if (relevantSystems.length >= 2) break;
       }
     }
     
@@ -214,7 +257,7 @@ export const Stack = () => {
   const SystemsPanel = ({ isMobile = false }) => {
     const containerClasses = isMobile 
       ? "lg:hidden mt-8 w-full" 
-      : "hidden lg:block w-[300px] shrink-0";
+      : "hidden lg:block w-[400px] shrink-0";
 
     const relevantSystems = activeSkill ? getSystemsForSkill(activeSkill) : [];
 
@@ -225,11 +268,11 @@ export const Stack = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="p-6 glass-card rounded-lg h-[400px] overflow-y-auto"
+          className="p-6 glass-card rounded-lg h-[425px] overflow-y-auto"
         >
           {activeSkill ? (
             <div className="h-full">
-              <h3 className="text-xl font-semibold mb-4">
+              <h3 className="text-l font-semibold mb-4">
                 {relevantSystems.length > 0 
                   ? `Projects using ${activeSkill}`
                   : `No projects currently showcasing ${activeSkill}`}
@@ -240,7 +283,7 @@ export const Stack = () => {
             <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
               <PlaceholderGrid />
               <p className="mt-6 text-sm">
-                Hover over a skill to see related projects
+              ← Hover on a Honeycomb
               </p>
             </div>
           )}
@@ -255,23 +298,6 @@ export const Stack = () => {
         <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center dark:text-white">Stack</h2>
         
         <div className="flex flex-col lg:flex-row gap-8">
-          {/* Left sidebar - Category icons */}
-          <div className="flex lg:flex-col gap-8 lg:gap-[120px] lg:pt-[17px] justify-center shrink-0">
-            {stack.map((category) => (
-              <motion.div
-                key={category.category}
-                whileHover={{ scale: 1.1 }}
-                transition={{ type: "spring", stiffness: 400, damping: 10 }}
-                className="cursor-pointer"
-              >
-                <category.icon 
-                  size={24} 
-                  className="dark:text-white" 
-                  title={category.category}
-                />
-              </motion.div>
-            ))}
-          </div>
 
           {/* Center - Honeycomb grid with fixed width */}
           <div className="flex-1 flex justify-center">

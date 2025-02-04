@@ -3,20 +3,22 @@ import { About } from "../components/About";
 import { Stack } from "../components/Stack";
 import { ProjectSection } from "../components/ProjectSection";
 import { Footer } from "../components/Footer";
+import { SmallerProjects } from "../components/SmallerProjects";
 
 const projects = [
   {
     id: "whatgov",
     url: "https://whatgov.co.uk",
     title: "WhatGov - Political Monitoring Platform",
-    description: "Full-stack application for easy political monitoring, with individual and enterprise tiers and full SEO. Features modern UI/UX, daily data processing pipeline using Government APIs, Github Actions, and OpenAI integration.",
+    description: "Full-stack application for easy political monitoring, with individual and enterprise tiers and full SEO. Features modern UI/UX, daily data processing pipeline using Government APIs, Github Actions, Stripe payments, and OpenAI integration.",
     image: "/whatgov-screenshot.png",
     features: [
-      "Supabase Backend with RPC Functions",
+      "Supabase + RPC Functions",
       "Indexed Database Tables",
       "OpenAI API Integration",
       "Github Actions Workflow",
-      "Enterprise & Individual Tiers"
+      "Enterprise & Individual Tiers",
+      "Stripe Payment Integration",
     ]
   },
   {
@@ -120,6 +122,10 @@ const Index = () => {
       {projects.map((project) => (
         <ProjectSection key={project.id} {...project} url={project.url || ''} />
       ))}
+      
+      {/* Add the SmallerProjects component here */}
+      <SmallerProjects />
+      
       <Footer />
     </div>
   );
