@@ -28,6 +28,28 @@
     --radius: 0.5rem;
   }
 
+  .dark {
+    --background: 220 17% 10%;
+    --foreground: 0 0% 95%;
+    --card: 220 17% 15%;
+    --card-foreground: 0 0% 95%;
+    --popover: 220 17% 15%;
+    --popover-foreground: 0 0% 95%;
+    --primary: 174 37% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 174 33% 38%;
+    --secondary-foreground: 0 0% 100%;
+    --muted: 220 17% 20%;
+    --muted-foreground: 174 37% 75%;
+    --accent: 168 100% 43%;
+    --accent-foreground: 0 0% 100%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 100%;
+    --border: 220 17% 25%;
+    --input: 220 17% 25%;
+    --ring: 174 37% 45%;
+  }
+
   * {
     @apply border-border;
   }
@@ -38,7 +60,7 @@
   }
 
   .glass-card {
-    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg;
+    @apply bg-white/80 backdrop-blur-sm border border-white/20 shadow-lg dark:bg-gray-800/80 dark:border-gray-700/20;
   }
 
   .parallax-card {

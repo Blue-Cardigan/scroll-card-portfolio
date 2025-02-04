@@ -268,11 +268,11 @@ export const Stack = () => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
-          className="p-6 glass-card rounded-lg h-[425px] overflow-y-auto"
+          className="p-6 glass-card rounded-lg h-[425px] overflow-y-auto dark:bg-gray-800/80"
         >
           {activeSkill ? (
             <div className="h-full">
-              <h3 className="text-l font-semibold mb-4">
+              <h3 className="text-l font-semibold mb-4 dark:text-gray-200">
                 {relevantSystems.length > 0 
                   ? `Projects using ${activeSkill}`
                   : `No projects currently showcasing ${activeSkill}`}
@@ -280,10 +280,10 @@ export const Stack = () => {
               <SystemsList systems={relevantSystems} isMobile={isMobile} />
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground">
+            <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground dark:text-gray-400">
               <PlaceholderGrid />
               <p className="mt-6 text-sm">
-              ← Hover on a Honeycomb
+                ← Hover on a Honeycomb
               </p>
             </div>
           )}
