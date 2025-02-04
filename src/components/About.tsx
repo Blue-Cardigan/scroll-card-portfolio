@@ -11,7 +11,6 @@ export const About = () => {
           viewport={{ once: true }}
           className="max-w-4xl mx-auto"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-8 text-center">About</h2>
           <div className="glass-card rounded-2xl p-8">
             <div className="flex flex-col md:flex-row gap-8 items-center">
               <motion.img

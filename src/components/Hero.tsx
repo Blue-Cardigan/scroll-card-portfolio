@@ -42,11 +42,11 @@ export const Hero = () => {
     };
   }, [showCode, isHovering]);
 
-  const scrollToProjects = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const scrollToStack = (e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
-    const projectsSection = document.querySelector('#projects');
-    if (projectsSection) {
-      projectsSection.scrollIntoView({ 
+    const stackSection = document.querySelector('#stack');
+    if (stackSection) {
+      stackSection.scrollIntoView({ 
         behavior: 'smooth',
         block: 'start'
       });
@@ -209,8 +209,8 @@ function generateSequence() {
             transition={{ delay: 1, duration: 0.5 }}
           >
             <motion.a
-              href="#projects"
-              onClick={scrollToProjects}
+              href="#stack"
+              onClick={scrollToStack}
               className="group relative inline-flex items-center gap-2 px-8 py-3 bg-primary dark:bg-primary sepia:bg-orange-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
