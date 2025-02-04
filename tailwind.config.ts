@@ -54,7 +54,7 @@ export default {
         },
         themes: {
           light: {
-            background: "#ffffff",
+            background: "#d6f1eb",
             text: "#1a1a1a",
             primary: "#3A7570",    // Green 
             secondary: "#2F5F5A",  // Dark Green 

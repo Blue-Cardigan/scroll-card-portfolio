@@ -50,3 +50,70 @@
     transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
   }
 }
+
+.honeycomb-grid {
+  display: grid;
+  grid-template-rows: repeat(3, auto);
+  gap: 30px;  /* Reduced gap to allow rows to interlock */
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.category-row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-left: 60px;
+  position: relative;
+  transition: opacity 0.2s;
+}
+
+/* Offset every even row (middle row) */
+.category-row:nth-child(2) {
+  transform: translateX(65px) translateY(-30px); /* Half hexagon width right, up to interlock */
+}
+
+/* Offset last row to match first row alignment */
+.category-row:nth-child(3) {
+  transform: translateY(-60px); /* Move up to maintain consistent spacing */
+}
+
+.hexagon-wrapper {
+  width: 120px;
+  height: 140px;
+  margin: -15px 5px;
+  position: relative;
+}
+
+.hexagon {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+  transition: transform 0.2s;
+}
+
+.hexagon:hover {
+  transform: scale(1.05);
+}
+
+/* Offset even hexagons within each row */
+.category-row .hexagon-wrapper:nth-child(even) {
+  transform: translateY(30px);
+}
+
+/* Add these new styles */
+.category-label {
+  transition: all 0.3s ease;
+  opacity: 0;
+  transform: translateX(-10px);
+}
+
+.category-label.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.category-row:hover {
+  opacity: 0.9;
+}
