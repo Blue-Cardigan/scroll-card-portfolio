@@ -23,9 +23,9 @@ const projects = [
   },
   {
     id: "flood-defence",
-    title: "Flood Defence - Department for Business & Trade",
+    title: "Flood Defence - Coefficient | ACE Commission",
     url: "https://coefficient.ai",
-    description: "Tailwind/Python security-oriented platform with sizable codebase hosted on AWS infrastructure. Revamped for open-source while teamed with highly experienced Coefficient team on ACE commission.",
+    description: "Tailwind/Python security-oriented platform for data visualisation and decision support, for which I joined the highly experienced Coefficient team on ACE commission on two occasions. Together we implemented specifications for a sizable codebase, which was hosted on AWS and reviewed for open source release.",
     image: "/coefficient.png",
     features: [
       "GraphQL Static & Dynamic APIs",
@@ -40,14 +40,15 @@ const projects = [
     id: "election-forecast",
     title: "UK Election Forecasting Dashboard",
     url: "https://polling-dashboard-357215153feb.herokuapp.com/",
-    description: "Data Visualization Platform showing forecasts using private polling data. Forecasts used industry gold-standard Multilinear Regression with Poststratification (MLP) and display using interactive Plotly diagrams.",
+    description: "Data Search & Visualization Platform showing election forecasts for Election Data Ltd. Forecasts used industry gold-standard Multilinear Regression with Poststratification (MLP).",
     image: "/sankey.png",
     features: [
       "Multilinear Regression",
+      "SQL + AI Database Search",
       "Poststratification Analysis",
       "Interactive Plotly Charts",
       "Secure Authentication",
-      "Private Access Control"
+      "Secure Password Hashing"
     ]
   },
   {
@@ -72,7 +73,7 @@ const projects = [
     features: [
       "Outlook Email Integration",
       "Automated Case Processing",
-      "Workflow Management",
+      "Custom Scripting",
       "Airtable Database",
       "Make.com Automation"
     ]
@@ -119,9 +120,10 @@ const Index = () => {
       <Stack />
 
       {/* Detailed Project Sections */}
+      <h2 className="mt-16 text-3xl md:text-4xl font-bold mb-12 text-center dark:text-white">I've built</h2>
       {projects.map((project) => (
-        <ProjectSection key={project.id} {...project} url={project.url || ''} />
-      ))}
+            <ProjectSection key={project.id} {...project} url={project.url || ''} />
+          ))}
       
       {/* Add the SmallerProjects component here */}
       <SmallerProjects />

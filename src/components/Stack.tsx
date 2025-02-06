@@ -1,12 +1,9 @@
 import { motion } from "framer-motion";
 import { 
   FaReact, 
-  FaNodeJs, 
-  FaPython, 
   FaAws, 
-  FaDocker
+  FaDocker,
 } from "react-icons/fa";
-import { RiBrainFill } from "react-icons/ri";
 import { 
   SiTypescript, 
   SiSupabase, 
@@ -14,7 +11,7 @@ import {
   SiDjango, 
   SiNextdotjs, 
   SiGraphql,
-  SiHeroku,
+  SiStripe,
   SiFirebase,
   SiRedis,
   SiMapbox,
@@ -30,22 +27,24 @@ const systems = {
     name: "WhatGov",
     stack: ["Supabase", "Next.js", "TypeScript", "React", "Node.js", "Vercel", "Tailwind", "Redis", "Stripe"],
     systems: [
-      "OAuth2 with emails",
-      "Profile management & preference collection",
+      "OAuth2",
+      "User Tier management",
+      "Profile management & personalisation",
+      "Stripe payment processing",
       "Daily data processing pipeline",
       "OpenAI integration",
-      "Stripe subscription management",
       "Enterprise user management"
     ]
   },
   "flood-defence": {
     name: "Flood Defence",
-    stack: ["TypeScript", "Python", "React", "AWS", "GraphQL", "Docker", "Tailwind", "Apollo Client", "Mapbox GL", "Django"],
+    stack: ["TypeScript", "Python", "React", "AWS", "GraphQL", "Docker", "Tailwind", "Apollo Client", "Mapbox GL", "Django", "NetworkX"],
     systems: [
+      "React frontend, Python backend",
       "GraphQL API with Ariadne",
       "Custom proxy solution",
       "AWS infrastructure (ECS, RDS, S3)",
-      "Security-oriented architecture"
+      "Security-first architecture"
     ]
   },
   "tuc-chatbot": {
@@ -60,7 +59,7 @@ const systems = {
   },
   "election-forecast": {
     name: "Election Forecast",
-    stack: ["Python", "FastAPI", "Heroku"],
+    stack: ["Python", "FastAPI"],
     systems: [
       "Statistical modeling pipeline",
       "Plotly dashboards",
@@ -88,7 +87,7 @@ const systems = {
   },
   "electoral-commission-bot": {
     name: "Electoral Commission ChatBot",
-    stack: ["Pinecone", "Langchain", "Heroku"],
+    stack: ["Pinecone/Langchain"],
     systems: [
       "Vector database integration",
       "RAG implementation",
@@ -118,8 +117,16 @@ const stack = [
       { name: "Django", icon: SiDjango, color: "#092E20" },
       { name: "GraphQL", icon: SiGraphql, color: "#E10098" },
       { name: "Redis", icon: SiRedis, color: "#DC382D" },
-      { name: "Pinecone", icon: RiBrainFill, color: "#000000" },
-      { name: "Langchain", icon: SiLangchain, color: "#3178C6" },
+      { 
+        name: "Pinecone +Langchain",
+        icon: SiLangchain, 
+        color: "#3178C6" 
+      },
+      { 
+        name: "NetworkX", 
+        icon: () => <img src="/networkx.png" alt="NetworkX" className="w-8 h-8" />, 
+        color: "#009688" 
+      },
     ]
   },
   {
@@ -131,7 +138,7 @@ const stack = [
       { name: "Vercel", icon: SiVercel, color: "#000000" },
       { name: "Supabase", icon: SiSupabase, color: "#3ECF8E" },
       { name: "Firebase", icon: SiFirebase, color: "#FFCA28" },
-      { name: "Heroku", icon: SiHeroku, color: "#430098"},
+      { name: "Stripe", icon: SiStripe, color: "#008CDD"},
     ]
   }
 ];
@@ -295,13 +302,13 @@ export const Stack = () => {
   return (
     <section id="stack" className="py-20 bg-muted">
       <div className="container px-4 mx-auto">
-        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center dark:text-white">Stack</h2>
+        <h2 className="text-3xl md:text-4xl font-bold mb-12 text-center dark:text-white">I've worked with</h2>
         
         <div className="flex flex-col lg:flex-row gap-8">
 
-          {/* Center - Honeycomb grid with fixed width */}
-          <div className="flex-1 flex justify-center">
-            <div className="honeycomb-grid w-full max-w-[800px]">
+          {/* Center - Honeycomb grid */}
+          <div className="flex-1 flex justify-center items-center">
+            <div className="honeycomb-grid">
               {stack.map((category) => (
                 <div key={category.category} className="category-row">
                   {category.items.map((skill, index) => (
@@ -316,8 +323,8 @@ export const Stack = () => {
                       onMouseLeave={() => setActiveSkill(null)}
                     >
                       <div className="hexagon glass-card flex flex-col items-center justify-center gap-2">
-                        <skill.icon size={32} style={{ color: skill.color }} />
-                        <span className="text-sm font-medium">{skill.name}</span>
+                        <skill.icon className="shrink-0" style={{ color: skill.color }}/>
+                        <span className="font-medium whitespace-pre-line">{skill.name}</span>
                       </div>
                     </motion.div>
                   ))}

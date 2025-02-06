@@ -26,7 +26,7 @@ export const About = () => {
                   I'm a high-agency fullstack developer with a strong backend foundation and keen eye for design. 
                 </p>
                 <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
-                  Through contract and personal work, I've bootstrapped applications and boosted teams with Python, JS, and SQL using Express, Node.js, Vercel, Django, Flask, Firebase, and AWS.
+                  Through contract and personal work, I've bootstrapped applications and bolstered teams, learning and adapting to a range of technologies.
                 </p>
                 <p className="text-lg text-gray-600 dark:text-gray-300 mb-6">
                   I work fast alone and thrive in a strong team dynamic.
