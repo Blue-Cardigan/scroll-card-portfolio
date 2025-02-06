@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import { ContactLinks } from "./ContactLinks";
 import { TypeAnimation } from 'react-type-animation';
@@ -17,6 +17,18 @@ export const Hero = () => {
   });
 
   const [isHovering, setIsHovering] = useState(false);
+
+  // Add a subtle bounce animation to hint at the code peek
+  const bounceAnimation = {
+    y: [0, -3, 0],
+    transition: {
+      duration: 1.5,
+      repeat: 2,
+      repeatType: "reverse" as const,
+      ease: "easeInOut",
+      delay: 2, // Wait for initial animations to complete
+    }
+  };
 
   // Update time and metrics periodically
   useEffect(() => {
@@ -111,8 +123,10 @@ function generateSequence() {
 
           <div className="relative">
             <div 
-              className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto h-20 cursor-pointer" 
+              className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto h-20 cursor-pointer relative group" 
               onClick={() => setShowCode(prev => !prev)}
+              onMouseEnter={() => setIsHovering(true)}
+              onMouseLeave={() => setIsHovering(false)}
             >
               <TypeAnimation
                 sequence={[
@@ -129,77 +143,90 @@ function generateSequence() {
                 speed={70}
                 repeat={Infinity}
               />
+              <motion.div 
+                className="absolute -right-8 top-1/2 -translate-y-1/2 text-muted-foreground/60 group-hover:text-primary transition-colors"
+                animate={!showCode ? bounceAnimation : {}}
+              >
+                <Code2 
+                  size={20} 
+                  className={`transform transition-transform duration-300 ${isHovering ? 'rotate-12' : ''}`}
+                />
+              </motion.div>
             </div>
 
-            {showCode && (
-              <motion.div
-                initial={{ opacity: 0, y: -20, height: 0 }}
-                animate={{ opacity: 1, y: 0, height: 'auto' }}
-                exit={{ opacity: 0, y: -20, height: 0 }}
-                transition={{ duration: 0.3 }}
-                className="relative mx-auto mb-12"
-              >
-                <div className="grid grid-cols-2 gap-4">
-                  <motion.pre
-                    className="text-left bg-black/80 backdrop-blur-sm rounded-lg p-6 font-mono text-sm text-green-400 overflow-x-auto"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.2 }}
-                  >
-                    <TypeAnimation
-                      sequence={[codeSnippet]}
-                      wrapper="span"
-                      speed={70}
-                      cursor={true}
-                    />
-                    <motion.div
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      className="absolute right-4 top-4 text-primary/60 group-hover:text-primary transition-colors"
+            <AnimatePresence>
+              {showCode && (
+                <motion.div
+                  initial={{ opacity: 0, y: -20, height: 0 }}
+                  animate={{ opacity: 1, y: 0, height: 'auto' }}
+                  exit={{ opacity: 0, y: -20, height: 0 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative mx-auto mb-12"
+                >
+                  <div className="grid grid-cols-2 gap-4">
+                    <motion.pre
+                      className="text-left bg-black/80 backdrop-blur-sm rounded-lg p-6 font-mono text-sm text-green-400 overflow-x-auto"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: 0.2 }}
                     >
-                      <Code2 size={20} />
-                    </motion.div>
-                  </motion.pre>
+                      <TypeAnimation
+                        sequence={[codeSnippet]}
+                        wrapper="span"
+                        speed={70}
+                        cursor={true}
+                      />
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="absolute right-4 top-4 text-primary/60 group-hover:text-primary transition-colors"
+                      >
+                        <Code2 size={20} />
+                      </motion.div>
+                    </motion.pre>
 
-                  <motion.pre
-                    className="relative text-left bg-black/80 backdrop-blur-sm rounded-lg overflow-hidden"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800/50 rounded-t-lg flex items-center px-4">
-                      <div className="flex gap-1.5 absolute left-4">
-                        <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                        <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                        <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                    <motion.pre
+                      className="relative text-left bg-black/80 backdrop-blur-sm rounded-lg overflow-hidden"
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      exit={{ opacity: 0, scale: 0.95 }}
+                      transition={{ delay: 0.4 }}
+                    >
+                      <div className="absolute top-0 left-0 right-0 h-8 bg-gray-800/50 rounded-t-lg flex items-center px-4">
+                        <div className="flex gap-1.5 absolute left-4">
+                          <div className="w-3 h-3 rounded-full bg-red-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
+                          <div className="w-3 h-3 rounded-full bg-green-500/80" />
+                        </div>
+                        <div className="flex-1 text-center text-gray-400 text-sm">AWS Cloud Console</div>
                       </div>
-                      <div className="flex-1 text-center text-gray-400 text-sm">AWS Cloud Console</div>
-                    </div>
-                    <div className="mt-8 p-6 space-y-1 max-w-[600px]">
-                      {serverLogs.split('\n').map((line, index) => (
-                        <motion.div 
-                          key={index}
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ 
-                            delay: index * 0.1,
-                            duration: 0.3
-                          }}
-                          className={`font-mono text-sm ${
-                            line.includes('[WARN]') 
-                              ? 'text-yellow-400' 
-                              : 'text-gray-300'
-                          } hover:whitespace-normal hover:break-words`}
-                        >
-                          {line.trim()}
-                        </motion.div>
-                      ))}
-                      <div className="inline-block w-2 h-4 bg-gray-400 animate-pulse" />
-                    </div>
-                  </motion.pre>
-                </div>
-              </motion.div>
-            )}
+                      <div className="mt-8 p-6 space-y-1 max-w-[600px]">
+                        {serverLogs.split('\n').map((line, index) => (
+                          <motion.div 
+                            key={index}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ 
+                              delay: index * 0.1,
+                              duration: 0.3
+                            }}
+                            className={`font-mono text-sm ${
+                              line.includes('[WARN]') 
+                                ? 'text-yellow-400' 
+                                : 'text-gray-300'
+                            } hover:whitespace-normal hover:break-words`}
+                          >
+                            {line.trim()}
+                          </motion.div>
+                        ))}
+                        <div className="inline-block w-2 h-4 bg-gray-400 animate-pulse" />
+                      </div>
+                    </motion.pre>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
 
           <motion.div
