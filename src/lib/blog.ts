@@ -1,4 +1,3 @@
-import type { ComponentType } from 'react';
 import matter from 'gray-matter';
 import { marked } from 'marked';
 import { Buffer } from 'buffer';
@@ -42,7 +41,10 @@ export async function getBlogPosts(): Promise<BlogPostMeta[]> {
       Object.entries(posts).map(async ([filepath, content]) => {
         try {
           const slug = filepath.split('/').pop()?.replace('.md', '') || '';
-          const { data, content: markdownContent } = matter(content as string);
+          
+          // Ensure content is properly handled as a string
+          const fileContent = typeof content === 'string' ? content : '';
+          const { data, content: markdownContent } = matter(fileContent);
           
           return {
             slug,

@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => ({
   resolve: {
     alias: {
       "@": path.resolve(__dirname, "./src"),
+      buffer: 'buffer/'
     },
   },
   publicDir: 'public',
@@ -29,7 +30,7 @@ export default defineConfig(({ mode }) => ({
     },
   },
   optimizeDeps: {
-    include: ['gray-matter', 'marked']
+    include: ['gray-matter', 'marked', 'buffer']
   },
   define: {
     'process.env': {},
