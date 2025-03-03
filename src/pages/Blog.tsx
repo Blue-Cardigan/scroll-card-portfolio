@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { Search, Tag, Calendar, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getBlogPosts } from "../lib/blog";
@@ -17,6 +17,19 @@ export default function Blog() {
 
   // Canvas reference for background animation
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  
+  // Animation frame reference to properly cancel animation
+  const animationFrameRef = useRef<number | null>(null);
+  
+  // Store particles in a ref to avoid re-creating on each render
+  const particlesRef = useRef<Array<{
+    x: number;
+    y: number;
+    radius: number;
+    color: string;
+    speedX: number;
+    speedY: number;
+  }>>([]);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -48,300 +61,311 @@ export default function Blog() {
 
     // Return a cleanup function to handle component unmounting
     return () => {
-      // Add any cleanup needed for the loadPosts effect
+      // Cancel any pending animation frames
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
   }, []);
 
-  useEffect(() => {
-    if (typingIndex < fullText.length) {
-      const timeout = setTimeout(() => {
-        setTypedText(prev => prev + fullText[typingIndex]);
-        setTypingIndex(typingIndex + 1);
-      }, 50); // Adjust speed as needed
-      
-      return () => clearTimeout(timeout);
-    }
-  }, [typingIndex, fullText]);
+  // Memoize the resize handler to avoid recreating on each render
+  const resizeCanvas = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
 
-  // Background animation effect
-  useEffect(() => {
-    // Only initialize animation when posts are loaded (or failed to load)
-    if (isLoading) return;
+    const parent = canvas.parentElement;
+    if (!parent) return;
+
+    canvas.width = parent.offsetWidth;
+    canvas.height = parent.offsetHeight;
     
+    // Re-initialize particles when canvas size changes
+    initParticles();
+  }, []);
+
+  // Initialize particles only once and store in ref
+  const initParticles = useCallback(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const isDarkMode = document.documentElement.classList.contains('dark');
+    const particles = [];
+    const particleCount = Math.min(50, Math.floor(canvas.width * canvas.height / 10000));
+    
+    for (let i = 0; i < particleCount; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        radius: Math.random() * 2 + 1,
+        color: isDarkMode ? 
+          `rgba(255, 255, 255, ${Math.random() * 0.2 + 0.1})` : 
+          `rgba(0, 0, 0, ${Math.random() * 0.1 + 0.05})`,
+        speedX: (Math.random() - 0.5) * 0.5,
+        speedY: (Math.random() - 0.5) * 0.5
+      });
+    }
+    
+    particlesRef.current = particles;
+  }, []);
+
+  // Optimize animation with useCallback to avoid recreation on each render
+  const animate = useCallback(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     
-    // Set canvas dimensions
-    const resizeCanvas = () => {
-      const heroSection = canvas.parentElement;
-      if (heroSection) {
-        canvas.width = heroSection.offsetWidth;
-        canvas.height = heroSection.offsetHeight;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    // Use particles from ref
+    const particles = particlesRef.current;
+    
+    particles.forEach(particle => {
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+      
+      // Bounce off walls
+      if (particle.x < 0 || particle.x > canvas.width) {
+        particle.speedX *= -1;
       }
-    };
+      
+      if (particle.y < 0 || particle.y > canvas.height) {
+        particle.speedY *= -1;
+      }
+      
+      ctx.beginPath();
+      ctx.arc(particle.x, particle.y, particle.radius, 0, Math.PI * 2);
+      ctx.fillStyle = particle.color;
+      ctx.fill();
+    });
     
-    // Add a small delay to ensure component is fully rendered
-    let initialResizeTimeout: NodeJS.Timeout;
-    
-    // Function to initialize animation
+    // Store animation frame ID for cleanup
+    animationFrameRef.current = requestAnimationFrame(animate);
+  }, []);
+
+  // Initialize animation
+  useEffect(() => {
     const initAnimation = () => {
       resizeCanvas();
-      window.addEventListener('resize', resizeCanvas);
-      
-      // Create code particles
-      const particles: {
-        x: number;
-        y: number;
-        size: number;
-        speed: number;
-        text: string;
-        opacity: number;
-        color: string;
-      }[] = [];
-      
-      const codeSnippets = [
-        '<div>', '</div>', 'const', 'function()', 'return', 'import', 
-        'export', 'useState', 'useEffect', '{...}', '=>',
-        'AI', 'Cursor', 'Vercel', '</>', 'async', 'await',
-        'SELECT *', 'INSERT INTO', 'JOIN', 'WHERE', 'GROUP BY',
-        'npm install', 'git commit', 'docker run',
-        'try/catch', 'Promise', '.then()', '.map()', '.filter()',
-        'middleware', 'API', 'REST', 'GraphQL', 'MongoDB',
-        'React', 'Node.js', 'TypeScript', 'PostgreSQL', 'Redis',
-      ];
-
-      // Initialize particles
-      for (let i = 0; i < 30; i++) {
-        particles.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          size: 8 + Math.random() * 8,
-          speed: 0.2 + Math.random() * 0.3,
-          text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
-          opacity: 0.1 + Math.random() * 0.2,
-          color: `hsl(${Math.random() * 60 + 170}, 70%, 60%)`
-        });
-      }
-      
-      // Animation loop
-      let animationId: number;
-      const animate = () => {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-        
-        // Update and draw particles
-        particles.forEach(particle => {
-          // Move particle upward
-          particle.y -= particle.speed;
-          
-          // Reset position if off-screen
-          if (particle.y < -20) {
-            particle.y = canvas.height + 20;
-            particle.x = Math.random() * canvas.width;
-          }
-          
-          // Draw text
-          ctx.font = `${particle.size}px monospace`;
-          ctx.fillStyle = particle.color;
-          ctx.globalAlpha = particle.opacity;
-          ctx.fillText(particle.text, particle.x, particle.y);
-        });
-        
-        animationId = requestAnimationFrame(animate);
-      };
-      
-      // Start animation
       animate();
-      
-      // Return cleanup function
-      return () => {
-        window.removeEventListener('resize', resizeCanvas);
-        cancelAnimationFrame(animationId);
-      };
     };
     
-    // Delay initialization slightly to ensure DOM is ready
-    initialResizeTimeout = setTimeout(() => {
-      const cleanup = initAnimation();
-      return cleanup;
-    }, 100);
+    initAnimation();
     
-    // Cleanup
+    window.addEventListener('resize', resizeCanvas);
+    
     return () => {
-      clearTimeout(initialResizeTimeout);
+      window.removeEventListener('resize', resizeCanvas);
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, [isLoading]);
+  }, [resizeCanvas, animate]);
 
-  const allTags = Array.from(new Set(posts.flatMap(post => post.tags)));
+  // Typing animation effect
+  useEffect(() => {
+    if (typingIndex < fullText.length) {
+      const timeout = setTimeout(() => {
+        setTypedText(prev => prev + fullText[typingIndex]);
+        setTypingIndex(prev => prev + 1);
+      }, 100);
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [typingIndex, fullText]);
 
-  const filteredPosts = posts.filter(post => {
-    const matchesTag = !selectedTag || post.tags.includes(selectedTag);
-    const matchesSearch = post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesTag && matchesSearch;
-  });
+  // Memoize filtered posts to avoid recalculating on every render
+  const filteredPosts = useMemo(() => {
+    return posts.filter(post => {
+      const matchesSearch = searchQuery === '' || 
+        post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        post.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+      
+      const matchesTag = selectedTag === null || 
+        post.tags.includes(selectedTag);
+      
+      return matchesSearch && matchesTag;
+    });
+  }, [posts, searchQuery, selectedTag]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center text-red-500">{error}</div>
-      </div>
-    );
-  }
+  // Memoize unique tags to avoid recalculating on every render
+  const uniqueTags = useMemo(() => {
+    const tags = new Set<string>();
+    posts.forEach(post => {
+      post.tags.forEach(tag => tags.add(tag));
+    });
+    return Array.from(tags);
+  }, [posts]);
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section with Background Animation */}
-      <section className="py-16 relative overflow-hidden">
-        {/* Background Canvas */}
+    <div className="min-h-screen bg-white dark:bg-slate-900 sepia:bg-[#fdf6e3] relative">
+      {/* Background canvas with particles */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <canvas 
           ref={canvasRef} 
-          className="absolute inset-0 w-full h-full z-200"
+          className="w-full h-full"
         />
-        
-        {/* Gradient Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-b from-background/90 to-background/70 -z-5"></div>
-        
-        <div className="container px-4 mx-auto relative z-10">
-          <motion.h1 
-            className="text-4xl md:text-5xl font-bold mb-6"
-            initial={{ opacity: 0, y: -20 }}
+      </div>
+      
+      <div className="container mx-auto px-4 py-16 relative z-10">
+        <div className="max-w-4xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
+            className="mb-12 text-center"
           >
-            Blog
-          </motion.h1>
-          <motion.p
-            className="text-xl text-muted-foreground mb-8"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2, duration: 0.5 }}
-          >
-            {typedText}
-            <span className="inline-block w-1 h-5 -mb-0.5 ml-1 bg-primary animate-blink"></span>
-          </motion.p>
-        </div>
-      </section>
-
-      {/* Search and Filter Section */}
-      <section className="py-8">
-        <div className="container px-4 mx-auto">
-          <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-            <div className="relative w-full md:w-96">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={20} />
-              <input
-                type="text"
-                placeholder="Search articles..."
-                className="w-full pl-10 pr-4 py-2 rounded-full bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-primary/50"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-            <div className="flex gap-2 flex-wrap justify-center">
-              {allTags.map(tag => (
-                <motion.button
-                  key={tag}
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className={`px-4 py-1 rounded-full text-sm font-medium flex items-center gap-2 ${
-                    selectedTag === tag 
-                      ? 'bg-primary text-white' 
-                      : 'bg-gray-100 dark:bg-gray-800 text-muted-foreground hover:bg-gray-200 dark:hover:bg-gray-700'
+            <Link 
+              to="/" 
+              className="inline-block mb-8 text-primary hover:text-primary/80 transition-colors"
+            >
+              <motion.div
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="flex items-center justify-center gap-2"
+              >
+                <ArrowRight className="rotate-180" size={20} />
+                <span className="font-medium">Back to Home</span>
+              </motion.div>
+            </Link>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-slate-900 dark:text-white sepia:text-slate-800">
+              Blog
+            </h1>
+            <div className="h-1 w-16 bg-primary mx-auto mb-6" />
+            <p className="text-lg text-slate-600 dark:text-slate-300 sepia:text-slate-600">
+              {typedText}
+              <span className="inline-block w-1 h-5 bg-primary ml-1 animate-blink" />
+            </p>
+          </motion.div>
+          
+          <div className="mb-8">
+            <div className="flex flex-col md:flex-row gap-4 mb-6">
+              <div className="relative flex-1">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400" size={18} />
+                <input
+                  type="text"
+                  placeholder="Search posts..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-10 pr-4 py-2 rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white sepia:bg-[#eee8d5] sepia:border-[#eee8d5] sepia:text-slate-800 focus:outline-none focus:ring-2 focus:ring-primary/50"
+                />
+              </div>
+              
+              <div className="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0">
+                <button
+                  onClick={() => setSelectedTag(null)}
+                  className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                    selectedTag === null
+                      ? 'bg-primary text-white'
+                      : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 sepia:bg-[#eee8d5] sepia:text-slate-700'
                   }`}
-                  onClick={() => setSelectedTag(selectedTag === tag ? null : tag)}
                 >
                   <Tag size={14} />
-                  {tag}
-                </motion.button>
-              ))}
+                  <span>All</span>
+                </button>
+                
+                {uniqueTags.map(tag => (
+                  <button
+                    key={tag}
+                    onClick={() => setSelectedTag(tag)}
+                    className={`flex items-center gap-1 px-3 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                      selectedTag === tag
+                        ? 'bg-primary text-white'
+                        : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 sepia:bg-[#eee8d5] sepia:text-slate-700'
+                    }`}
+                  >
+                    <Tag size={14} />
+                    <span>{tag}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* Blog Posts Grid */}
-      <section className="py-12">
-        <div className="container px-4 mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {filteredPosts.map((post, index) => (
-              <motion.article
-                key={post.slug}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
-                className="group relative"
-              >
-                <Link to={`/blog/${post.slug}`}>
-                  <div className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200/50 dark:border-gray-700/50">
-                    <div className="relative h-56 overflow-hidden">
-                      <img 
-                        src={post.image} 
-                        alt={post.title}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
-                      
-                      {/* Tags positioned over image */}
-                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
-                        {post.tags.map(tag => (
-                          <span 
-                            key={tag}
-                            className="text-xs px-3 py-1 rounded-full 
-                              bg-white/90 dark:bg-gray-900/90 
-                              text-primary dark:text-primary-foreground
-                              backdrop-blur-sm border border-primary/10
-                              font-medium"
-                          >
-                            {tag}
-                          </span>
-                        ))}
+          
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary" />
+            </div>
+          ) : error ? (
+            <div className="bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg p-4 text-center text-red-800 dark:text-red-200">
+              {error}
+            </div>
+          ) : filteredPosts.length === 0 ? (
+            <div className="text-center py-20">
+              <p className="text-slate-500 dark:text-slate-400">No posts found matching your criteria.</p>
+            </div>
+          ) : (
+            <div className="grid gap-8">
+              {filteredPosts.map((post) => (
+                <motion.article
+                  key={post.slug}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5 }}
+                  className="bg-white dark:bg-slate-800 sepia:bg-[#fdf6e3] rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <Link to={`/blog/${post.slug}`} className="block group">
+                    <div className="md:flex">
+                      <div className="md:w-1/3 h-48 md:h-auto relative overflow-hidden">
+                        <img
+                          src={post.image}
+                          alt={post.title}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          loading="lazy"
+                          width="300"
+                          height="200"
+                        />
+                      </div>
+                      <div className="p-6 md:w-2/3">
+                        <div className="flex flex-wrap gap-2 mb-3">
+                          {post.tags.map(tag => (
+                            <span
+                              key={tag}
+                              className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-primary/10 text-primary"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setSelectedTag(tag);
+                              }}
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                        
+                        <h2 className="text-xl font-bold mb-2 text-slate-900 dark:text-white sepia:text-slate-800 group-hover:text-primary transition-colors">
+                          {post.title}
+                        </h2>
+                        
+                        <p className="text-slate-600 dark:text-slate-300 sepia:text-slate-600 mb-4 line-clamp-2">
+                          {post.excerpt}
+                        </p>
+                        
+                        <div className="flex items-center text-sm text-slate-500 dark:text-slate-400 sepia:text-slate-500">
+                          <div className="flex items-center mr-4">
+                            <Calendar size={14} className="mr-1" />
+                            <span>{new Date(post.date).toLocaleDateString('en-US', { 
+                              year: 'numeric', 
+                              month: 'short', 
+                              day: 'numeric' 
+                            })}</span>
+                          </div>
+                          
+                          <div className="flex items-center">
+                            <Clock size={14} className="mr-1" />
+                            <span>{post.readTime}</span>
+                          </div>
+                        </div>
                       </div>
                     </div>
-
-                    <div className="p-6">
-                      {/* Meta info with updated styling */}
-                      <div className="flex gap-4 text-sm text-muted-foreground mb-3">
-                        <span className="flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded-md">
-                          <Calendar size={14} className="text-primary" />
-                          {new Date(post.date).toLocaleDateString()}
-                        </span>
-                        <span className="flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded-md">
-                          <Clock size={14} className="text-primary" />
-                          {post.readTime}
-                        </span>
-                      </div>
-
-                      {/* Title and excerpt */}
-                      <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
-                        {post.title}
-                      </h3>
-                      <p className="text-muted-foreground line-clamp-2">
-                        {post.excerpt}
-                      </p>
-
-                      {/* Read more indicator */}
-                      <div className="mt-4 flex items-center gap-2 text-primary font-medium">
-                        Read more 
-                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              </motion.article>
-            ))}
-          </div>
+                  </Link>
+                </motion.article>
+              ))}
+            </div>
+          )}
         </div>
-      </section>
+      </div>
     </div>
   );
 } 

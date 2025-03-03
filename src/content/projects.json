@@ -66,6 +66,20 @@
       ]
     },
     {
+      "id": "tuc-bot",
+      "url": "https://ocpb-57b6o68zr-lwp.vercel.app/",
+      "title": "Union Training Bot",
+      "endDate": "Nov 2024",
+      "isMinor": false,
+      "description": "Union training bot for the TUC, with a focus on providing a personalised training experience for each user. Features a modern UI/UX and OpenAI integration. Also the first project with my consultancy Civita.",
+      "image": "/tuc-bot.png",
+      "features": [
+        "Supabase + RPC Functions",
+        "Indexed Database Tables",
+        "OpenAI API Integration"
+      ]
+    },
+    {
       "id": "election-forecast",
       "title": "UK Election Forecasting Dashboard",
       "url": "https://polling-dashboard-357215153feb.herokuapp.com/",

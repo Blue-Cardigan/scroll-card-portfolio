@@ -29,7 +29,7 @@ function calculateReadTime(content: string): string {
   return `${minutes} min`;
 }
 
-// Updated glob configuration
+// Updated glob configuration with better caching
 const posts = import.meta.glob('../content/blog/*.md', { 
   eager: true,
   as: 'raw'
@@ -107,7 +107,31 @@ function parseFrontMatter(content: string) {
   };
 }
 
+// Improved caching with TTL and memory management
+const postCache: Map<string, { data: BlogPost, timestamp: number }> = new Map();
+const postsMetaCache: { data: BlogPostMeta[] | null, timestamp: number } = { data: null, timestamp: 0 };
+const CACHE_TTL = 5 * 60 * 1000; // 5 minutes in milliseconds
+const MAX_CACHE_SIZE = 50; // Maximum number of posts to keep in cache
+
+// Helper to clean up old cache entries
+function cleanupCache() {
+  if (postCache.size > MAX_CACHE_SIZE) {
+    // Sort by timestamp and remove oldest entries
+    const entries = Array.from(postCache.entries())
+      .sort((a, b) => b[1].timestamp - a[1].timestamp)
+      .slice(0, MAX_CACHE_SIZE);
+    
+    postCache.clear();
+    entries.forEach(([key, value]) => postCache.set(key, value));
+  }
+}
+
 export async function getBlogPosts(): Promise<BlogPostMeta[]> {
+  // Check if we have cached data that's still fresh
+  if (postsMetaCache.data && (Date.now() - postsMetaCache.timestamp < CACHE_TTL)) {
+    return postsMetaCache.data;
+  }
+  
   try {
     const allPosts = await Promise.all(
       Object.entries(posts).map(async ([filepath, content]) => {
@@ -133,16 +157,48 @@ export async function getBlogPosts(): Promise<BlogPostMeta[]> {
       })
     );
 
-    return allPosts
+    const result = allPosts
       .filter((post): post is BlogPostMeta => post !== null)
       .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    // Cache the result before returning
+    postsMetaCache.data = result;
+    postsMetaCache.timestamp = Date.now();
+    return result;
   } catch (error) {
     console.error('Error getting blog posts:', error);
     throw error;
   }
 }
 
+// Memoized markdown parser
+const parsedMarkdownCache = new Map<string, string>();
+async function parseMarkdown(content: string): Promise<string> {
+  const cacheKey = content.substring(0, 100); // Use first 100 chars as key to avoid memory issues
+  
+  if (parsedMarkdownCache.has(cacheKey)) {
+    return parsedMarkdownCache.get(cacheKey)!;
+  }
+  
+  const parsed = await marked(content);
+  parsedMarkdownCache.set(cacheKey, parsed);
+  
+  // Limit cache size
+  if (parsedMarkdownCache.size > 50) {
+    const firstKey = parsedMarkdownCache.keys().next().value;
+    parsedMarkdownCache.delete(firstKey);
+  }
+  
+  return parsed;
+}
+
 export async function getBlogPost(slug: string): Promise<BlogPost> {
+  // Check cache first
+  const cachedPost = postCache.get(slug);
+  if (cachedPost && (Date.now() - cachedPost.timestamp < CACHE_TTL)) {
+    return cachedPost.data;
+  }
+  
   try {
     // Find the correct file path for the given slug
     const filepath = Object.keys(posts).find(path => path.includes(`/${slug}.md`));
@@ -154,7 +210,7 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
     const content = posts[filepath] as string;
     const { data, content: markdownContent } = parseFrontMatter(content);
     
-    return {
+    const blogPost = {
       slug,
       title: data.title || '',
       date: data.date || '',
@@ -163,8 +219,14 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
       tags: Array.isArray(data.tags) ? data.tags : [],
       image: data.image || '',
       readTime: calculateReadTime(markdownContent),
-      content: await marked(markdownContent)
+      content: await parseMarkdown(markdownContent)
     };
+    
+    // Cache the result
+    postCache.set(slug, { data: blogPost, timestamp: Date.now() });
+    cleanupCache();
+    
+    return blogPost;
   } catch (error) {
     console.error(`Error getting blog post ${slug}:`, error);
     throw error;

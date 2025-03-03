@@ -114,6 +114,7 @@ export const ProjectSection = ({
           key={project.title}
           className={`
             absolute z-20
+            hidden md:block
             ${isEven 
               ? 'left-[55%] translate-x-8' 
               : 'right-[55%] -translate-x-8'
@@ -160,7 +161,7 @@ export const ProjectSection = ({
             <div className="relative w-128 h-24 flex items-center justify-center">
               {/* Default state */}
               <div className="opacity-100 group-hover:opacity-0 transition-opacity absolute inset-0 flex flex-col items-center justify-center">
-                <span className="text-s font-medium text-primary">
+                <span className="text-xl font-medium text-primary">
                   {formatTitle(project.title)}
                 </span>
               </div>
@@ -216,14 +217,14 @@ export const ProjectSection = ({
           ${isEven ? 'ml-auto' : 'mr-auto'}
         `}
       >
-        {/* Timeline connector */}
+        {/* Timeline connector - only visible on medium screens and up */}
         <div className={`
           absolute top-1/2 hidden md:block
           ${isEven ? 'right-0 left-[98%]' : 'left-0 right-[98%]'}
           h-0.5 bg-gray-200 dark:bg-gray-700
         `} />
 
-        {/* Date indicator */}
+        {/* Date indicator - always centered on the timeline */}
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-slate-800 px-3 py-1 rounded-full text-sm border border-gray-200 dark:border-gray-700 z-10">
           {formatDate(endDate)}
         </div>
@@ -239,13 +240,16 @@ export const ProjectSection = ({
               <motion.div
                 whileHover={{ scale: 1.05 }}
                 transition={{ duration: 0.3 }}
-                className={`relative overflow-hidden rounded-lg ${isMinor ? 'h-24' : 'h-36'}`}
+                className={`relative overflow-hidden rounded-lg ${isMinor ? 'h-24 sm:h-32' : 'h-32 sm:h-36'}`}
               >
                 <a href={url} target="_blank" rel="noopener noreferrer" className="block h-full">
                   <img
                     src={image}
                     alt={title}
                     className="w-full h-full object-cover transition-transform duration-300"
+                    loading="lazy"
+                    width="400"
+                    height={isMinor ? "96" : "144"}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-end p-4">
                     <ExternalLink className="text-white" size={24} />

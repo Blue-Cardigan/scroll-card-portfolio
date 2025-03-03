@@ -13,7 +13,7 @@ const Index = () => {
 
       <h2 className="mt-16 text-3xl md:text-4xl font-bold mb-12 text-center dark:text-white">Project Timeline</h2>
       <div className="relative container px-4 mx-auto my-8">
-        <div className="absolute left-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20 dark:from-primary/30 dark:via-primary/60 dark:to-primary/30" />
+        <div className="absolute left-1/2 transform -translate-x-1/2 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20 dark:from-primary/30 dark:via-primary/60 dark:to-primary/30" />
         
         {getMainProjects().map((project, index) => (
           <ProjectSection 

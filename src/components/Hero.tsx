@@ -2,9 +2,30 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import { ContactLinks } from "./ContactLinks";
 import { TypeAnimation } from 'react-type-animation';
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { ChevronDown, Code2, BookOpen } from "lucide-react";
 import { Link } from "react-router-dom";
+
+// Memoize static components
+const MemoizedContactLinks = memo(ContactLinks);
+const MemoizedThemeToggle = memo(ThemeToggle);
+
+// Pre-defined code snippet to avoid re-creation on each render
+const CODE_SNIPPET = `import { skills } from "./skills.json";
+  
+function generateSequence() {  
+  try {
+    return skills.map(skill => ({
+      text: enhance(skill),
+      delay: 1000
+    }));
+  } catch (e) {
+    return {
+      status: 418,
+      retry_after: "caffeine.replenish()"
+    }
+  }
+}`;
 
 export const Hero = () => {
   const [showCode, setShowCode] = useState(false);
@@ -30,6 +51,17 @@ export const Hero = () => {
     }
   };
 
+  // Memoize the metrics update function
+  const updateMetrics = useCallback(() => {
+    setMetrics(prev => ({
+      cpu: Math.min(95, Math.max(20, prev.cpu + (Math.random() - 0.5) * 10)),
+      throughput: Math.min(95, Math.max(60, prev.throughput + (Math.random() - 0.5) * 5)),
+      cacheHit: Math.min(99, Math.max(85, prev.cacheHit + (Math.random() - 0.5) * 2)),
+      connections: Math.min(95, Math.max(70, prev.connections + (Math.random() - 0.5) * 5)),
+      eviction: Math.max(0, Math.min(0.1, prev.eviction + (Math.random() - 0.5) * 0.01))
+    }));
+  }, []);
+
   useEffect(() => {
     if (!showCode && !isHovering) return;
 
@@ -37,23 +69,16 @@ export const Hero = () => {
       setCurrentTime(new Date());
     }, 1000);
 
-    const metricsInterval = setInterval(() => {
-      setMetrics(prev => ({
-        cpu: Math.min(95, Math.max(20, prev.cpu + (Math.random() - 0.5) * 10)),
-        throughput: Math.min(95, Math.max(60, prev.throughput + (Math.random() - 0.5) * 5)),
-        cacheHit: Math.min(99, Math.max(85, prev.cacheHit + (Math.random() - 0.5) * 2)),
-        connections: Math.min(95, Math.max(70, prev.connections + (Math.random() - 0.5) * 5)),
-        eviction: Math.max(0, Math.min(0.1, prev.eviction + (Math.random() - 0.5) * 0.01))
-      }));
-    }, 2000);
+    // Reduce update frequency for better performance
+    const metricsInterval = setInterval(updateMetrics, 3000);
 
     return () => {
       clearInterval(timeInterval);
       clearInterval(metricsInterval);
     };
-  }, [showCode, isHovering]);
+  }, [showCode, isHovering, updateMetrics]);
 
-  const scrollToStack = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const scrollToStack = useCallback((e: React.MouseEvent<HTMLAnchorElement>) => {
     e.preventDefault();
     const stackSection = document.querySelector('#stack');
     if (stackSection) {
@@ -62,29 +87,15 @@ export const Hero = () => {
         block: 'start'
       });
     }
-  };
-
-  const codeSnippet = `import { skills } from "./skills.json";
-  
-function generateSequence() {  
-  try {
-    return skills.map(skill => ({
-      text: enhance(skill),
-      delay: 1000
-    }));
-  } catch (e) {
-    return {
-      status: 418,
-      retry_after: "caffeine.replenish()"
-    }
-  }
-}`;
+  }, []);
 
   const getFormattedTime = (date: Date) => {
     return date.toISOString().replace('T', ' ').slice(0, 19);
   };
 
-  const serverLogs = `[INFO] ${getFormattedTime(currentTime)} AWS::ECS::Service - Container deployment completed successfully
+  // Generate server logs only when needed
+  const getServerLogs = useCallback(() => {
+    return `[INFO] ${getFormattedTime(currentTime)} AWS::ECS::Service - Container deployment completed successfully
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 1000))} AWS::CloudWatch - CPU utilization: ${metrics.cpu.toFixed(1)}%
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 2000))} AWS::Lambda - Function cold start: 85ms
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 3000))} AWS::EC2 - System health: Optimal
@@ -94,15 +105,16 @@ function generateSequence() {
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 7000))} AWS::RDS - Database connections: ${metrics.connections.toFixed(0)}/100
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 8000))} AWS::SQS - Average message processing time: 45ms
   [INFO] ${getFormattedTime(new Date(currentTime.getTime() + 9000))} AWS::ElastiCache - Cache eviction: ${metrics.eviction.toFixed(3)}%`;
+  }, [currentTime, metrics, getFormattedTime]);
 
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden py-16 px-4">
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-slate-900/95 dark:to-slate-800/95 sepia:from-[#fdf6e3]/90 sepia:to-[#faf7ed]/90 -z-10" />
       <div className="fixed top-0 left-0 right-0 z-50 flex justify-between p-4">
-        <ContactLinks />
-        <ThemeToggle />
+        <MemoizedContactLinks />
+        <MemoizedThemeToggle />
       </div>
-      <div className="container px-4 mx-auto">
+      <div className="container mx-auto max-w-6xl">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -116,15 +128,15 @@ function generateSequence() {
             className="mb-8 cursor-pointer"
             onClick={() => setShowCode(prev => !prev)}
           >
-            <h1 className="text-5xl md:text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700">
+            <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700">
               Hi, I'm Jethro!
             </h1>
-            <div className="h-1 w-24 mx-auto bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700 rounded-full" />
+            <div className="h-1 w-16 sm:w-24 mx-auto bg-gradient-to-r from-primary to-secondary dark:from-primary dark:to-secondary sepia:from-orange-700 sepia:to-amber-700 rounded-full" />
           </motion.div>
 
           <div className="relative">
             <div 
-              className="text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto h-20 cursor-pointer relative group" 
+              className="text-lg sm:text-xl md:text-2xl text-muted-foreground mb-6 max-w-2xl mx-auto h-20 cursor-pointer relative group" 
               onClick={() => setShowCode(prev => !prev)}
               onMouseEnter={() => setIsHovering(true)}
               onMouseLeave={() => setIsHovering(false)}
@@ -145,7 +157,7 @@ function generateSequence() {
                 repeat={Infinity}
               />
               <motion.div 
-                className="absolute -right-8 top-1/2 -translate-y-1/2 text-muted-foreground/60 group-hover:text-primary transition-colors"
+                className="absolute -right-8 top-1/2 -translate-y-1/2 text-muted-foreground/60 group-hover:text-primary transition-colors hidden sm:block"
                 animate={!showCode ? bounceAnimation : {}}
               >
                 <Code2 
@@ -164,16 +176,16 @@ function generateSequence() {
                   transition={{ duration: 0.3 }}
                   className="relative mx-auto mb-12"
                 >
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <motion.pre
-                      className="text-left bg-black/80 backdrop-blur-sm rounded-lg p-6 font-mono text-sm text-green-400 overflow-x-auto"
+                      className="text-left bg-black/80 backdrop-blur-sm rounded-lg p-4 sm:p-6 font-mono text-xs sm:text-sm text-green-400 overflow-x-auto"
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 0.95 }}
                       transition={{ delay: 0.2 }}
                     >
                       <TypeAnimation
-                        sequence={[codeSnippet]}
+                        sequence={[CODE_SNIPPET]}
                         wrapper="span"
                         speed={70}
                         cursor={true}
@@ -203,7 +215,7 @@ function generateSequence() {
                         <div className="flex-1 text-center text-gray-400 text-sm">AWS Cloud Console</div>
                       </div>
                       <div className="mt-8 p-6 space-y-1 max-w-[600px]">
-                        {serverLogs.split('\n').map((line, index) => (
+                        {getServerLogs().split('\n').map((line, index) => (
                           <motion.div 
                             key={index}
                             initial={{ opacity: 0, x: -20 }}
@@ -236,7 +248,7 @@ function generateSequence() {
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <div className="flex gap-4">
+            <div className="flex flex-wrap justify-center gap-4">
               <motion.a
                 href="#stack"
                 onClick={scrollToStack}
