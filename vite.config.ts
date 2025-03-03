@@ -23,9 +23,12 @@ export default defineConfig(({ mode }) => ({
   publicDir: 'public',
   assetsInclude: ['**/*.md'],
   build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
     rollupOptions: {
       input: {
         main: './index.html',
+        manifest: './public/site.webmanifest'
       },
     },
   },

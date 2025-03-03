@@ -1,4 +1,4 @@
-import matter from 'gray-matter';
+import type { ComponentType } from 'react';
 import { marked } from 'marked';
 import { Buffer } from 'buffer';
 
@@ -35,25 +35,62 @@ const posts = import.meta.glob('../content/blog/*.md', {
   as: 'raw'
 });
 
+// Remove gray-matter dependency and implement a simpler frontmatter parser
+function parseFrontMatter(content: string) {
+  const frontMatterRegex = /^---\n([\s\S]*?)\n---/;
+  const match = content.match(frontMatterRegex);
+  
+  if (!match) {
+    return {
+      data: {},
+      content: content
+    };
+  }
+
+  const frontMatter = match[1];
+  const remainingContent = content.replace(match[0], '').trim();
+  
+  // Parse the YAML-like front matter
+  const data = frontMatter.split('\n').reduce((acc, line) => {
+    const [key, ...values] = line.split(':');
+    if (key && values.length) {
+      const value = values.join(':').trim();
+      // Handle arrays marked with -
+      if (value.includes('-')) {
+        acc[key.trim()] = value.split('-')
+          .map(item => item.trim())
+          .filter(Boolean);
+      } else {
+        // Remove quotes if present
+        acc[key.trim()] = value.replace(/^['"](.*)['"]$/, '$1');
+      }
+    }
+    return acc;
+  }, {} as Record<string, any>);
+
+  return {
+    data,
+    content: remainingContent
+  };
+}
+
 export async function getBlogPosts(): Promise<BlogPostMeta[]> {
   try {
     const allPosts = await Promise.all(
       Object.entries(posts).map(async ([filepath, content]) => {
         try {
           const slug = filepath.split('/').pop()?.replace('.md', '') || '';
-          
-          // Ensure content is properly handled as a string
           const fileContent = typeof content === 'string' ? content : '';
-          const { data, content: markdownContent } = matter(fileContent);
+          const { data, content: markdownContent } = parseFrontMatter(fileContent);
           
           return {
             slug,
-            title: data.title,
-            date: data.date,
-            excerpt: data.excerpt,
-            author: data.author,
-            tags: data.tags,
-            image: data.image,
+            title: data.title || '',
+            date: data.date || '',
+            excerpt: data.excerpt || '',
+            author: data.author || { name: '', avatar: '' },
+            tags: Array.isArray(data.tags) ? data.tags : [],
+            image: data.image || '',
             readTime: calculateReadTime(markdownContent)
           };
         } catch (error) {
@@ -82,16 +119,16 @@ export async function getBlogPost(slug: string): Promise<BlogPost> {
     }
 
     const content = posts[filepath] as string;
-    const { data, content: markdownContent } = matter(content);
+    const { data, content: markdownContent } = parseFrontMatter(content);
     
     return {
       slug,
-      title: data.title,
-      date: data.date,
-      excerpt: data.excerpt,
-      author: data.author,
-      tags: data.tags,
-      image: data.image,
+      title: data.title || '',
+      date: data.date || '',
+      excerpt: data.excerpt || '',
+      author: data.author || { name: '', avatar: '' },
+      tags: Array.isArray(data.tags) ? data.tags : [],
+      image: data.image || '',
       readTime: calculateReadTime(markdownContent),
       content: await marked(markdownContent)
     };
