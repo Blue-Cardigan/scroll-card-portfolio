@@ -169,7 +169,7 @@ export default function Blog() {
       const timeout = setTimeout(() => {
         setTypedText(prev => prev + fullText[typingIndex]);
         setTypingIndex(prev => prev + 1);
-      }, 100);
+      }, 35);
       
       return () => clearTimeout(timeout);
     }
@@ -236,7 +236,7 @@ export default function Blog() {
             <div className="h-1 w-16 bg-primary mx-auto mb-6" />
             <p className="text-lg text-slate-600 dark:text-slate-300 sepia:text-slate-600">
               {typedText}
-              <span className="inline-block w-1 h-5 bg-primary ml-1 animate-blink" />
+              <span className="inline-block w-1 h-5 -mb-1 bg-primary ml-1 animate-blink" />
             </p>
           </motion.div>
           
