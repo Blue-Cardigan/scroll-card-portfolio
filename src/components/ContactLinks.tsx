@@ -28,7 +28,7 @@ export const ContactLinks = () => {
         <Linkedin size={20} className="text-primary dark:text-primary sepia:text-amber-800" />
       </a>
       <a
-        href="mailto:jethro@whatgov.co.uk"
+        href="mailto:jethro@civita.co.uk"
         className="p-2 rounded-full transition-colors hover:bg-primary/10 dark:hover:bg-primary/20 sepia:hover:bg-amber-100"
         aria-label="Email Contact"
       >

@@ -35,7 +35,7 @@ export const Footer = () => {
               <Linkedin size={20} />
             </motion.a>
             <motion.a
-              href="mailto:jethro@whatgov.co.uk"
+              href="mailto:jethro@civita.co.uk"
               whileHover={{ scale: 1.1 }}
               className="text-muted-foreground hover:text-primary"
             >

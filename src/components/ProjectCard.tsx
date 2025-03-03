@@ -53,14 +53,14 @@ export const ProjectCard = ({ title, url, description, image, index, id }: Proje
     <div
       ref={cardRef}
       onClick={handleClick}
-      className="parallax-card glass-card rounded-xl p-6 transition-all duration-200 ease-out cursor-pointer"
+      className="parallax-card bg-white/90 dark:bg-gray-800/90 sepia:bg-white/95 backdrop-blur-sm border border-white/20 shadow-lg dark:border-gray-700/20 sepia:border-black/5 rounded-xl p-6 transition-all duration-200 ease-out cursor-pointer"
       style={{ animationDelay: `${index * 0.1}s` }}
     >
-      <div className="relative h-48 mb-6 overflow-hidden rounded-lg">
+      <div className="relative h-48 mb-6 overflow-hidden rounded-lg bg-white dark:bg-gray-900 sepia:bg-white">
         <img
           src={image}
           alt={title}
-          className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-300 sepia:contrast-100 sepia:saturate-100"
         />
       </div>
       <a href={url} target="_blank" rel="noopener noreferrer" className="block">

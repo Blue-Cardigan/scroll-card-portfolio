@@ -50,6 +50,102 @@
     --ring: 174 37% 45%;
   }
 
+  .sepia {
+    --background: 33 41% 89%;      /* Based on themes.sepia.background */
+    --foreground: 15 45% 12%;      /* Based on themes.sepia.text */
+    --card: 39 100% 96%;           /* Based on themes.sepia.surface */
+    --card-foreground: 15 45% 12%;
+    --popover: 39 100% 96%;
+    --popover-foreground: 15 45% 12%;
+    --primary: 20 75% 31%;         /* Based on themes.sepia.primary */
+    --primary-foreground: 39 100% 96%;
+    --secondary: 19 56% 41%;       /* Based on themes.sepia.secondary */
+    --secondary-foreground: 39 100% 96%;
+    --muted: 33 25% 44%;          /* Based on themes.sepia.muted */
+    --muted-foreground: 20 75% 31%;
+    --accent: 20 100% 41%;        /* Based on themes.sepia.accent */
+    --accent-foreground: 39 100% 96%;
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 39 100% 96%;
+    --border: 33 25% 84%;         /* Slightly darker border color */
+    --input: 33 25% 84%; 
+    --ring: 20 75% 31%;           /* Using primary color for focus rings */
+  }
+
+  /* Add to your global CSS file */
+  .prose {
+    @apply text-gray-900 dark:text-gray-100 max-w-none;
+  }
+
+  .prose h1 {
+    @apply text-4xl font-bold mb-8 tracking-tight;
+  }
+
+  .prose h2 {
+    @apply text-3xl font-bold mt-12 mb-6 tracking-tight text-primary dark:text-primary;
+  }
+
+  .prose h3 {
+    @apply text-2xl font-semibold mt-8 mb-4 text-secondary dark:text-secondary;
+  }
+
+  .prose p {
+    @apply mb-6 leading-relaxed text-lg;
+  }
+
+  .prose strong {
+    @apply font-semibold text-primary dark:text-primary;
+  }
+
+  .prose blockquote {
+    @apply pl-6 my-8 border-l-4 border-primary italic bg-muted/50 dark:bg-muted py-4 px-6 rounded-r-lg;
+  }
+
+  .prose blockquote p {
+    @apply mb-0;
+  }
+
+  .prose ul {
+    @apply list-disc list-inside mb-6 space-y-2;
+  }
+
+  .prose ol {
+    @apply list-decimal list-inside mb-6 space-y-2;
+  }
+
+  .prose li {
+    @apply mb-2 text-lg;
+  }
+
+  .prose a {
+    @apply text-primary dark:text-primary hover:underline font-medium;
+  }
+
+  .prose code {
+    @apply px-2 py-1 bg-muted dark:bg-muted rounded text-sm font-mono;
+  }
+
+  .prose pre {
+    @apply p-4 mb-6 bg-muted dark:bg-muted rounded-lg overflow-x-auto;
+  }
+
+  .prose pre code {
+    @apply bg-transparent p-0 text-sm leading-relaxed;
+  }
+
+  .prose img {
+    @apply rounded-lg shadow-lg my-8;
+  }
+
+  .prose hr {
+    @apply my-12 border-muted dark:border-muted;
+  }
+
+  /* Add styles for the testimonials section */
+  .prose blockquote + p {
+    @apply text-sm text-muted-foreground mt-2 text-right;
+  }
+
   * {
     @apply border-border;
   }
@@ -139,4 +235,122 @@
 .hexagon svg {
   width: clamp(24px, 4vw, 32px);
   height: clamp(24px, 4vw, 32px);
+}
+
+.hover-trigger {
+  cursor: pointer;
+}
+
+.hover-content {
+  display: none;
+  padding: 1rem;
+  margin: 0.5rem 0;
+  background: #f5f5f5;
+  border-left: 3px solid #666;
+  border-radius: 4px;
+}
+
+.hover-trigger:hover + .hover-content,
+.hover-content:hover {
+  display: block;
+}
+
+/* Workshop Stats and Learning Path Tables */
+.prose .workshop-stats table,
+.prose .learning-path table {
+  @apply my-8 w-full border-collapse bg-card/50 rounded-lg overflow-hidden shadow-sm;
+}
+
+.prose .workshop-stats th,
+.prose .learning-path th {
+  @apply bg-primary/10 text-primary dark:text-primary-foreground font-semibold px-4 py-3 text-left;
+}
+
+.prose .workshop-stats td,
+.prose .learning-path td {
+  @apply px-4 py-3 border-t border-muted;
+}
+
+.prose .learning-path td:first-child {
+  @apply font-semibold text-primary dark:text-primary-foreground whitespace-nowrap;
+}
+
+.prose .workshop-stats tr:first-child td {
+  @apply border-t-0;
+}
+
+/* Add subtle hover effect */
+.prose .learning-path tr:hover {
+  @apply bg-muted/50 transition-colors;
+}
+
+/* Bullet points within table cells */
+.prose td ul {
+  @apply list-none m-0 p-0;
+}
+
+.prose td li {
+  @apply mb-1 text-base;
+}
+
+/* Make tables responsive */
+@media (max-width: 640px) {
+  .prose .learning-path table {
+    @apply block;
+  }
+  
+  .prose .learning-path thead,
+  .prose .learning-path tbody,
+  .prose .learning-path tr {
+    @apply block;
+  }
+  
+  .prose .learning-path td {
+    @apply block text-left;
+  }
+  
+  .prose .learning-path td:first-child {
+    @apply bg-primary/10 -mx-4 px-4 py-2;
+  }
+}
+
+/* Testimonial Layouts */
+.prose .testimonial-left,
+.prose .testimonial-right {
+  @apply my-8 max-w-sm;
+}
+
+.prose .testimonial-left {
+  @apply float-left mr-8;
+}
+
+.prose .testimonial-right {
+  @apply float-right ml-8;
+}
+
+.prose .testimonial-left blockquote,
+.prose .testimonial-right blockquote {
+  @apply my-0 text-sm;
+}
+
+/* Clear floats after sections */
+.prose h2 {
+  @apply clear-both;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .prose .testimonial-left,
+  .prose .testimonial-right {
+    @apply float-none mx-auto my-8 max-w-none;
+  }
+}
+
+/* Optional: Add a subtle rotation to testimonials */
+.prose .testimonial-left blockquote {
+  @apply transform -rotate-1;
+}
+
+.prose .testimonial-right blockquote {
+  @apply transform rotate-1;
 }

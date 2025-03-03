@@ -20,4 +20,19 @@ export default defineConfig(({ mode }) => ({
     },
   },
   publicDir: 'public',
+  assetsInclude: ['**/*.md'],
+  build: {
+    rollupOptions: {
+      input: {
+        main: './index.html',
+      },
+    },
+  },
+  optimizeDeps: {
+    include: ['gray-matter', 'marked']
+  },
+  define: {
+    'process.env': {},
+    'Buffer': ['buffer', 'Buffer'],
+  }
 }));

@@ -1,0 +1,158 @@
+{
+    "main": [
+      {
+      "id": "whatgov",
+      "url": "https://whatgov.co.uk",
+      "title": "WhatGov - Political Monitoring Platform",
+      "endDate": "Feb 2025",
+      "isMinor": false,
+      "description": "Full-stack application for easy political monitoring, with individual and enterprise tiers and full SEO. Features modern UI/UX, daily data processing pipeline using Government APIs, Github Actions, Stripe payments, and OpenAI integration.",
+      "image": "/whatgov-screenshot.png",
+      "features": [
+        "Supabase + RPC Functions",
+        "Indexed Database Tables",
+        "OpenAI API Integration",
+        "Github Actions Workflow",
+        "Enterprise & Individual Tiers",
+        "Stripe Payment Integration"
+      ]
+    },
+    {
+      "id": "crm",
+      "title": "MP Case Automation",
+      "endDate": "",
+      "isMinor": true,
+      "description": "Consulting project to streamline MP office workflows and email processing. Interviewed key stakeholders and implemented a custom Outlook add-in to automate case processing.",
+      "image": "/airtable-make.png",
+      "features": [
+        "Outlook Email Integration",
+        "Automated Case Processing",
+        "Custom Scripting",
+        "Airtable Database & Automation",
+        "Make.com Automation"
+      ]
+    },
+    {
+      "id": "ai-workshops",
+      "title": "AI for Campaigners",
+      "url": "https://community.socialmovementtechnologies.org/courses/ai-for-social-justice-groups/",
+      "endDate": "Jan 2025",
+      "isMinor": true,
+      "description": "AI Agent integrated with campaigners' workflow, to research and analyse international campaign data. \n\nAccompanied by returning set of comprehensive 2-hour workshops on LLMs and practical AI applications, delivered to 100+ participants across US, Europe, and Africa.",
+      "image": "/workshop.png",
+      "features": [
+        "LLM Technology Overview",
+        "Practical Applications",
+        "International Delivery",
+        "100+ Participants",
+        "Hands-on Exercises"
+      ]
+    },
+    {
+      "id": "flood-defence",
+      "title": "Flood Defence - Coefficient | ACE Commission",
+      "url": "https://coefficient.ai",
+      "endDate": "Sep 2024",
+      "isMinor": false,
+      "description": "Tailwind/Python security-oriented platform for data visualisation and emergency response planning, for which I joined the highly experienced Coefficient team on ACE commission on two occasions. Together we implemented specifications for a sizable codebase, which was hosted on AWS and reviewed for open source release.",
+      "image": "/coefficient.png",
+      "features": [
+        "GraphQL Static & Dynamic APIs",
+        "Custom proxy solution",
+        "React Frontend",
+        "Python Backend",
+        "AWS Infrastructure",
+        "Lean Team Rapid Delivery"
+      ]
+    },
+    {
+      "id": "election-forecast",
+      "title": "UK Election Forecasting Dashboard",
+      "url": "https://polling-dashboard-357215153feb.herokuapp.com/",
+      "endDate": "Jul 2024",
+      "isMinor": false,
+      "description": "Data Search & Visualization Platform showing election forecasts for Election Data Ltd. Forecasts used industry gold-standard Multilinear Regression with Poststratification (MLP).",
+      "image": "/sankey.png",
+      "features": [
+        "Multilinear Regression",
+        "SQL + AI Database Search",
+        "Poststratification Analysis",
+        "Interactive Plotly Charts",
+        "Secure Authentication",
+        "Secure Password Hashing"
+      ]
+    },
+    {
+      "id": "parliamentary-workflow",
+      "title": "Financial Analysis - Parliamentary Workflow Study",
+      "url": "https://docs.google.com/document/d/106aimSyecfLhBjJ9iFV4Izxvz2HZAHCk_X2QJXPKVkk",
+      "endDate": "Jan 2024",
+      "isMinor": true,
+      "description": "Analysis of spending patterns to identify workflow optimisations.",
+      "image": "/mpoffice.png",
+      "features": [
+        "Python, Pandas"
+      ]
+    },
+    {
+      "id": "nlp-analysis",
+      "title": "Substack Thematic Analysis",
+      "url": "https://docs.google.com/document/d/1nl4gViPYo7IXjh-jIYkMl0qc2pUG6doWk7fFLYAVChI",
+      "endDate": "Dec 2023",
+      "isMinor": true,
+      "description": "Community network and NLP-based content analysis using topic modeling techniques including Community detection, TFIDF, LDA, and LLM classification.",
+      "image": "/lda.png",
+      "features": [
+        "Python, Pandas, DataOps",
+        "Modified Z-Score ranking",
+        "TFIDF Processing",
+        "LDA Implementation",
+        "LLM Classification",
+        "Topic Modeling",
+        "Content Insights"
+      ]
+    }
+  ],
+  "small": [
+    {
+      "title": "Medical Justice - Casework Software Consultation",
+      "description": "Software transition strategy and implementation planning",
+      "url": "https://medicaljustice.org.uk/",
+      "tech": "Structured interviews, Research",
+      "isOpenSource": false,
+      "endDate": "Aug 2024"
+      },
+      {
+      "title": "EasyMail - Campaign Letter Writing Integration",
+      "description": "Automated letter writing system for non-profit organisations",
+      "url": "https://easymail.civita.co.uk/",
+      "tech": "Firebase, Supabase",
+      "isOpenSource": false,
+      "endDate": "Sep 2024"
+      },
+      {
+      "title": "AI for Campaigners",
+      "description": "First set of 2-hour workshops on LLMs and practical AI applications, delivered to 60+ participants across US, Europe, and Africa.",
+      "url": "https://community.socialmovementtechnologies.org/courses/ai-for-social-justice-groups/",
+      "tech": "LLM Technology Overview, Practical Applications, International Delivery, 100+ Participants, Hands-on Exercises",
+      "isOpenSource": true,
+      "endDate": "Jul 2024"
+      },
+      {
+      "title": "SMS AI Chatbot - We Are Civitas",
+      "description": "Automated text messaging system for Digital Campaigns Agency, We Are Civitas",
+      "url": "https://www.wearecivitas.com/",
+      "tech": "Firebase, Twilio",
+      "isOpenSource": true,
+      "endDate": "Jan 2024"
+      },
+      {
+      "title": "Votespeaker - Campaign Lab",
+      "description": "Campaign letter drafting system for Campaigning Community",
+      "url": "https://votespeaker.civita.co.uk/",
+      "tech": "React, Next.js, OpenAI, Supabase",
+      "isOpenSource": true,
+      "endDate": "Nov 2023"
+      }
+    ]
+  }

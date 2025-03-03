@@ -8,11 +8,34 @@ export const ThemeToggle = () => {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
+    // Check local storage first
     const savedTheme = localStorage.getItem('theme') as Theme;
+    
     if (savedTheme) {
       setTheme(savedTheme);
       document.documentElement.className = savedTheme;
+    } else {
+      // Check system preferences if no saved theme
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      
+      const newTheme: Theme = systemPrefersDark ? 'dark' : 'light';
+      setTheme(newTheme);
+      document.documentElement.className = newTheme;
+      localStorage.setItem('theme', newTheme);
     }
+
+    // Listen for system theme changes
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
+    const handleChange = (e: MediaQueryListEvent) => {
+      if (!localStorage.getItem('theme')) {  // Only update if user hasn't set a preference
+        const newTheme: Theme = e.matches ? 'dark' : 'light';
+        setTheme(newTheme);
+        document.documentElement.className = newTheme;
+      }
+    };
+
+    mediaQuery.addEventListener('change', handleChange);
+    return () => mediaQuery.removeEventListener('change', handleChange);
   }, []);
 
   const toggleTheme = (newTheme: Theme) => {

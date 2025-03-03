@@ -72,13 +72,13 @@ export default {
             surface: "#1e293b"       // Slate 800
           },
           sepia: {
-            background: "#fdf6e3",   // Warm white
-            text: "#433422",         // Deep brown
-            primary: "#9a3412",      // Orange 800
-            secondary: "#b45309",    // Amber 800
-            accent: "#c2410c",       // Orange 700
-            muted: "#78716c",        // Stone 500
-            surface: "#faf7ed"       // Warmer white
+            background: "#faf6f1",    // Lighter, less saturated background
+            text: "#2c1810",          // Keep dark brown text
+            primary: "#9b4722",       // Warm brown - less yellow tint
+            secondary: "#8b593e",     // Softer brown
+            accent: "#cb6843",        // Brighter orange-brown
+            muted: "#8b7355",         // Keep existing muted
+            surface: "#ffffff"        // Pure white for image containers
           }
         }
       },

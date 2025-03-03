@@ -2,8 +2,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ThemeToggle } from "./ThemeToggle";
 import { ContactLinks } from "./ContactLinks";
 import { TypeAnimation } from 'react-type-animation';
-import { useState, useEffect } from "react";  // Add useEffect
-import { ChevronDown, Code2 } from "lucide-react";
+import { useState, useEffect } from "react";
+import { ChevronDown, Code2, BookOpen } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export const Hero = () => {
   const [showCode, setShowCode] = useState(false);
@@ -18,7 +19,6 @@ export const Hero = () => {
 
   const [isHovering, setIsHovering] = useState(false);
 
-  // Add a subtle bounce animation to hint at the code peek
   const bounceAnimation = {
     y: [0, -3, 0],
     transition: {
@@ -26,11 +26,10 @@ export const Hero = () => {
       repeat: 2,
       repeatType: "reverse" as const,
       ease: "easeInOut",
-      delay: 2, // Wait for initial animations to complete
+      delay: 2,
     }
   };
 
-  // Update time and metrics periodically
   useEffect(() => {
     if (!showCode && !isHovering) return;
 
@@ -99,8 +98,10 @@ function generateSequence() {
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-slate-50/90 to-white/90 dark:from-slate-900/95 dark:to-slate-800/95 sepia:from-[#fdf6e3]/90 sepia:to-[#faf7ed]/90 -z-10" />
-      <ContactLinks />
-      <ThemeToggle />
+      <div className="fixed top-0 left-0 right-0 z-50 flex justify-between p-4">
+        <ContactLinks />
+        <ThemeToggle />
+      </div>
       <div className="container px-4 mx-auto">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -230,31 +231,38 @@ function generateSequence() {
           </div>
 
           <motion.div
-            className="flex flex-col items-center gap-2"
+            className="flex flex-col items-center gap-4"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 1, duration: 0.5 }}
           >
-            <motion.a
-              href="#stack"
-              onClick={scrollToStack}
-              className="group relative inline-flex items-center gap-2 px-8 py-3 bg-primary dark:bg-primary sepia:bg-orange-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <motion.div
-                className="relative"
-                animate={{ y: [0, 1, 0] }}
-                transition={{ 
-                  repeat: Infinity, 
-                  duration: 2,
-                  ease: "easeInOut"
-                }}
+            <div className="flex gap-4">
+              <motion.a
+                href="#stack"
+                onClick={scrollToStack}
+                className="group relative inline-flex items-center gap-2 px-6 py-3 bg-primary dark:bg-primary sepia:bg-orange-700 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
               >
                 <ChevronDown size={20} />
+                <span>Work</span>
+                <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+              </motion.a>
+
+              <motion.div
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <Link
+                  to="/blog"
+                  className="group relative inline-flex items-center gap-2 px-8 py-3 bg-secondary/90 text-white rounded-full font-medium shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  <BookOpen size={20} />
+                  Blog
+                  <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </Link>
               </motion.div>
-              <span className="absolute inset-0 rounded-full bg-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-            </motion.a>
+            </div>
           </motion.div>
         </motion.div>
       </div>
