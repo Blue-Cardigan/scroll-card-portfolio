@@ -358,6 +358,15 @@
 /* Canvas animation styles */
 canvas {
   pointer-events: none;
+  visibility: visible !important; /* Force visibility */
+  opacity: 1 !important; /* Force opacity */
+}
+
+/* Add this to ensure the section is visible */
+.hero-section {
+  position: relative;
+  overflow: hidden;
+  min-height: 200px; /* Ensure minimum height */
 }
 
 /* Ensure z-index works properly */

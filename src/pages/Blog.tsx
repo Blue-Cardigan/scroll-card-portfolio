@@ -45,6 +45,11 @@ export default function Blog() {
     };
 
     loadPosts();
+
+    // Return a cleanup function to handle component unmounting
+    return () => {
+      // Add any cleanup needed for the loadPosts effect
+    };
   }, []);
 
   useEffect(() => {
@@ -60,6 +65,9 @@ export default function Blog() {
 
   // Background animation effect
   useEffect(() => {
+    // Only initialize animation when posts are loaded (or failed to load)
+    if (isLoading) return;
+    
     const canvas = canvasRef.current;
     if (!canvas) return;
     
@@ -75,73 +83,96 @@ export default function Blog() {
       }
     };
     
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // Add a small delay to ensure component is fully rendered
+    let initialResizeTimeout: NodeJS.Timeout;
     
-    // Create code particles
-    const particles: {
-      x: number;
-      y: number;
-      size: number;
-      speed: number;
-      text: string;
-      opacity: number;
-      color: string;
-    }[] = [];
-    
-    const codeSnippets = [
-      '<div>', '</div>', 'const', 'function()', 'return', 'import', 
-      'export', 'useState', 'useEffect', '{...}', '=>',
-      'AI', 'Cursor', 'Vercel', '</>',
-    ];
-    
-    // Initialize particles
-    for (let i = 0; i < 30; i++) {
-      particles.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        size: 8 + Math.random() * 8,
-        speed: 0.2 + Math.random() * 0.3,
-        text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
-        opacity: 0.1 + Math.random() * 0.2,
-        color: `hsl(${Math.random() * 60 + 170}, 70%, 60%)`
-      });
-    }
-    
-    // Animation loop
-    let animationId: number;
-    const animate = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    // Function to initialize animation
+    const initAnimation = () => {
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
       
-      // Update and draw particles
-      particles.forEach(particle => {
-        // Move particle upward
-        particle.y -= particle.speed;
-        
-        // Reset position if off-screen
-        if (particle.y < -20) {
-          particle.y = canvas.height + 20;
-          particle.x = Math.random() * canvas.width;
-        }
-        
-        // Draw text
-        ctx.font = `${particle.size}px monospace`;
-        ctx.fillStyle = particle.color;
-        ctx.globalAlpha = particle.opacity;
-        ctx.fillText(particle.text, particle.x, particle.y);
-      });
+      // Create code particles
+      const particles: {
+        x: number;
+        y: number;
+        size: number;
+        speed: number;
+        text: string;
+        opacity: number;
+        color: string;
+      }[] = [];
       
-      animationId = requestAnimationFrame(animate);
+      const codeSnippets = [
+        '<div>', '</div>', 'const', 'function()', 'return', 'import', 
+        'export', 'useState', 'useEffect', '{...}', '=>',
+        'AI', 'Cursor', 'Vercel', '</>', 'async', 'await',
+        'SELECT *', 'INSERT INTO', 'JOIN', 'WHERE', 'GROUP BY',
+        'npm install', 'git commit', 'docker run',
+        'try/catch', 'Promise', '.then()', '.map()', '.filter()',
+        'middleware', 'API', 'REST', 'GraphQL', 'MongoDB',
+        'React', 'Node.js', 'TypeScript', 'PostgreSQL', 'Redis',
+      ];
+
+      // Initialize particles
+      for (let i = 0; i < 30; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          size: 8 + Math.random() * 8,
+          speed: 0.2 + Math.random() * 0.3,
+          text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
+          opacity: 0.1 + Math.random() * 0.2,
+          color: `hsl(${Math.random() * 60 + 170}, 70%, 60%)`
+        });
+      }
+      
+      // Animation loop
+      let animationId: number;
+      const animate = () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        
+        // Update and draw particles
+        particles.forEach(particle => {
+          // Move particle upward
+          particle.y -= particle.speed;
+          
+          // Reset position if off-screen
+          if (particle.y < -20) {
+            particle.y = canvas.height + 20;
+            particle.x = Math.random() * canvas.width;
+          }
+          
+          // Draw text
+          ctx.font = `${particle.size}px monospace`;
+          ctx.fillStyle = particle.color;
+          ctx.globalAlpha = particle.opacity;
+          ctx.fillText(particle.text, particle.x, particle.y);
+        });
+        
+        animationId = requestAnimationFrame(animate);
+      };
+      
+      // Start animation
+      animate();
+      
+      // Return cleanup function
+      return () => {
+        window.removeEventListener('resize', resizeCanvas);
+        cancelAnimationFrame(animationId);
+      };
     };
     
-    animate();
+    // Delay initialization slightly to ensure DOM is ready
+    initialResizeTimeout = setTimeout(() => {
+      const cleanup = initAnimation();
+      return cleanup;
+    }, 100);
     
     // Cleanup
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
-      cancelAnimationFrame(animationId);
+      clearTimeout(initialResizeTimeout);
     };
-  }, []);
+  }, [isLoading]);
 
   const allTags = Array.from(new Set(posts.flatMap(post => post.tags)));
 
