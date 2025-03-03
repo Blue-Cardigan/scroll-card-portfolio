@@ -6,42 +6,50 @@ type Theme = 'light' | 'dark' | 'sepia';
 
 export const ThemeToggle = () => {
   const [theme, setTheme] = useState<Theme>('light');
+  
+  const safeGetItem = (key: string, fallback: string): string => {
+    try {
+      return localStorage.getItem(key) || fallback;
+    } catch (error) {
+      console.warn('Unable to access localStorage:', error);
+      return fallback;
+    }
+  };
+  
+  const safeSetItem = (key: string, value: string): void => {
+    try {
+      localStorage.setItem(key, value);
+    } catch (error) {
+      console.warn('Unable to write to localStorage:', error);
+    }
+  };
 
   useEffect(() => {
-    // Check local storage first
-    const savedTheme = localStorage.getItem('theme') as Theme;
-    
-    if (savedTheme) {
-      setTheme(savedTheme);
-      document.documentElement.className = savedTheme;
-    } else {
-      // Check system preferences if no saved theme
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    try {
+      const storedTheme = safeGetItem('theme', '');
       
-      const newTheme: Theme = systemPrefersDark ? 'dark' : 'light';
-      setTheme(newTheme);
-      document.documentElement.className = newTheme;
-      localStorage.setItem('theme', newTheme);
-    }
-
-    // Listen for system theme changes
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e: MediaQueryListEvent) => {
-      if (!localStorage.getItem('theme')) {  // Only update if user hasn't set a preference
-        const newTheme: Theme = e.matches ? 'dark' : 'light';
-        setTheme(newTheme);
-        document.documentElement.className = newTheme;
+      if (storedTheme && ['light', 'dark', 'sepia'].includes(storedTheme)) {
+        setTheme(storedTheme as Theme);
+      } else {
+        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        setTheme(prefersDark ? 'dark' : 'light');
       }
-    };
-
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    } catch (error) {
+      setTheme('light');
+    }
   }, []);
+
+  useEffect(() => {
+    if (!theme) return;
+    
+    document.documentElement.classList.remove('light', 'dark', 'sepia');
+    document.documentElement.classList.add(theme);
+    
+    safeSetItem('theme', theme);
+  }, [theme]);
 
   const toggleTheme = (newTheme: Theme) => {
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
-    document.documentElement.className = newTheme;
   };
 
   return (

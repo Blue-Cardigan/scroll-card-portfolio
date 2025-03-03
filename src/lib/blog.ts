@@ -51,22 +51,55 @@ function parseFrontMatter(content: string) {
   const remainingContent = content.replace(match[0], '').trim();
   
   // Parse the YAML-like front matter
-  const data = frontMatter.split('\n').reduce((acc, line) => {
-    const [key, ...values] = line.split(':');
-    if (key && values.length) {
-      const value = values.join(':').trim();
-      // Handle arrays marked with -
-      if (value.includes('-')) {
-        acc[key.trim()] = value.split('-')
-          .map(item => item.trim())
-          .filter(Boolean);
-      } else {
+  const data: Record<string, any> = {};
+  let currentKey: string | null = null;
+  let currentObject: Record<string, any> | null = null;
+  
+  frontMatter.split('\n').forEach(line => {
+    // Skip empty lines
+    if (!line.trim()) return;
+    
+    // Check for indentation to detect nested objects
+    const indentMatch = line.match(/^(\s+)/);
+    const isIndented = indentMatch !== null;
+    
+    if (!isIndented) {
+      // This is a top-level key
+      const [key, ...values] = line.split(':');
+      if (key && values.length) {
+        currentKey = key.trim();
+        const value = values.join(':').trim();
+        
+        // Check if this is the start of an object (no value after colon)
+        if (!value) {
+          data[currentKey] = {};
+          currentObject = data[currentKey];
+        } else {
+          // Handle arrays marked with -
+          if (value.includes('-')) {
+            data[currentKey] = value.split('-')
+              .map(item => item.trim())
+              .filter(Boolean);
+          } else {
+            // Remove quotes if present
+            data[currentKey] = value.replace(/^['"](.*)['"]$/, '$1');
+          }
+          currentObject = null;
+        }
+      }
+    } else if (currentObject !== null && currentKey !== null) {
+      // This is a nested property
+      const trimmedLine = line.trim();
+      const [key, ...values] = trimmedLine.split(':');
+      if (key && values.length) {
+        const nestedKey = key.trim();
+        const value = values.join(':').trim();
+        
         // Remove quotes if present
-        acc[key.trim()] = value.replace(/^['"](.*)['"]$/, '$1');
+        currentObject[nestedKey] = value.replace(/^['"](.*)['"]$/, '$1');
       }
     }
-    return acc;
-  }, {} as Record<string, any>);
+  });
 
   return {
     data,

@@ -6,48 +6,42 @@ import { getBlogPost } from "../lib/blog";
 import type { BlogPost as BlogPostType } from "../lib/blog";
 
 export default function BlogPost() {
-  const { slug } = useParams();
-  const navigate = useNavigate();
+  const { slug } = useParams<{ slug: string }>();
   const [post, setPost] = useState<BlogPostType | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme');
-    if (savedTheme) {
-      document.documentElement.className = savedTheme;
-    } else {
-      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const theme = systemPrefersDark ? 'dark' : 'light';
-      document.documentElement.className = theme;
-      localStorage.setItem('theme', theme);
-    }
-  }, []);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadPost = async () => {
+      if (!slug) {
+        setError('Post not found');
+        setLoading(false);
+        return;
+      }
+
       try {
-        setIsLoading(true);
-        if (!slug) throw new Error('No slug provided');
-        const post = await getBlogPost(slug);
-        setPost(post);
-      } catch (error) {
-        console.error('Error loading blog post:', error);
-        setError(error instanceof Error ? error.message : 'Failed to load post');
-        // Only navigate away if the post is not found
-        if (error instanceof Error && error.message.includes('not found')) {
-          navigate('/blog');
-        }
-      } finally {
-        setIsLoading(false);
+        const postData = await getBlogPost(slug);
+        setPost(postData);
+        setLoading(false);
+      } catch (err) {
+        console.error('Failed to load post:', err);
+        setError('Failed to load post');
+        setLoading(false);
       }
     };
 
     loadPost();
-    window.scrollTo(0, 0);
-  }, [slug, navigate]);
+  }, [slug]);
 
-  if (isLoading) {
+  // Handle 404 gracefully
+  useEffect(() => {
+    if (error === 'Post not found') {
+      navigate('/blog', { replace: true });
+    }
+  }, [error, navigate]);
+
+  if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary" />

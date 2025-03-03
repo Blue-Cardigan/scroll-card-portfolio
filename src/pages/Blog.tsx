@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Search, Tag, Calendar, Clock, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { getBlogPosts } from "../lib/blog";
@@ -11,6 +11,12 @@ export default function Blog() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [typedText, setTypedText] = useState('');
+  const fullText = "things I think are worth writing about";
+  const [typingIndex, setTypingIndex] = useState(0);
+
+  // Canvas reference for background animation
+  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme');
@@ -41,6 +47,102 @@ export default function Blog() {
     loadPosts();
   }, []);
 
+  useEffect(() => {
+    if (typingIndex < fullText.length) {
+      const timeout = setTimeout(() => {
+        setTypedText(prev => prev + fullText[typingIndex]);
+        setTypingIndex(typingIndex + 1);
+      }, 50); // Adjust speed as needed
+      
+      return () => clearTimeout(timeout);
+    }
+  }, [typingIndex, fullText]);
+
+  // Background animation effect
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+    
+    // Set canvas dimensions
+    const resizeCanvas = () => {
+      const heroSection = canvas.parentElement;
+      if (heroSection) {
+        canvas.width = heroSection.offsetWidth;
+        canvas.height = heroSection.offsetHeight;
+      }
+    };
+    
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+    
+    // Create code particles
+    const particles: {
+      x: number;
+      y: number;
+      size: number;
+      speed: number;
+      text: string;
+      opacity: number;
+      color: string;
+    }[] = [];
+    
+    const codeSnippets = [
+      '<div>', '</div>', 'const', 'function()', 'return', 'import', 
+      'export', 'useState', 'useEffect', '{...}', '=>',
+      'AI', 'Cursor', 'Vercel', '</>',
+    ];
+    
+    // Initialize particles
+    for (let i = 0; i < 30; i++) {
+      particles.push({
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        size: 8 + Math.random() * 8,
+        speed: 0.2 + Math.random() * 0.3,
+        text: codeSnippets[Math.floor(Math.random() * codeSnippets.length)],
+        opacity: 0.1 + Math.random() * 0.2,
+        color: `hsl(${Math.random() * 60 + 170}, 70%, 60%)`
+      });
+    }
+    
+    // Animation loop
+    let animationId: number;
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Update and draw particles
+      particles.forEach(particle => {
+        // Move particle upward
+        particle.y -= particle.speed;
+        
+        // Reset position if off-screen
+        if (particle.y < -20) {
+          particle.y = canvas.height + 20;
+          particle.x = Math.random() * canvas.width;
+        }
+        
+        // Draw text
+        ctx.font = `${particle.size}px monospace`;
+        ctx.fillStyle = particle.color;
+        ctx.globalAlpha = particle.opacity;
+        ctx.fillText(particle.text, particle.x, particle.y);
+      });
+      
+      animationId = requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('resize', resizeCanvas);
+      cancelAnimationFrame(animationId);
+    };
+  }, []);
+
   const allTags = Array.from(new Set(posts.flatMap(post => post.tags)));
 
   const filteredPosts = posts.filter(post => {
@@ -68,33 +170,37 @@ export default function Blog() {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <motion.section 
-        className="relative h-[40vh] flex items-center justify-center overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-secondary/20 dark:from-primary/10 dark:to-secondary/10" />
-        <div className="container px-4 mx-auto text-center relative z-10">
+      {/* Hero Section with Background Animation */}
+      <section className="py-16 relative overflow-hidden">
+        {/* Background Canvas */}
+        <canvas 
+          ref={canvasRef} 
+          className="absolute inset-0 w-full h-full z-200"
+        />
+        
+        {/* Gradient Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/90 to-background/70 -z-5"></div>
+        
+        <div className="container px-4 mx-auto relative z-10">
           <motion.h1 
-            className="text-5xl md:text-6xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary pb-1"
-            initial={{ y: 20 }}
-            animate={{ y: 0 }}
-            transition={{ delay: 0.2 }}
+            className="text-4xl md:text-5xl font-bold mb-6"
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
           >
-            Words by me
+            Blog
           </motion.h1>
-          <motion.p 
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
+          <motion.p
+            className="text-xl text-muted-foreground mb-8"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
           >
-            Things I think are worth writing about
+            {typedText}
+            <span className="inline-block w-1 h-5 -mb-0.5 ml-1 bg-primary animate-blink"></span>
           </motion.p>
         </div>
-      </motion.section>
+      </section>
 
       {/* Search and Filter Section */}
       <section className="py-8">
