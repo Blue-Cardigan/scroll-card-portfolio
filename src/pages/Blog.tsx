@@ -142,54 +142,64 @@ export default function Blog() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: index * 0.1 }}
-                className="group"
+                className="group relative"
               >
-                <div className="glass-card rounded-xl overflow-hidden transition-all duration-300 hover:shadow-lg">
-                  <div className="relative h-48 overflow-hidden">
-                    <img 
-                      src={post.image} 
-                      alt={post.title}
-                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
-                  </div>
-                  <div className="p-6">
-                    <div className="flex gap-4 text-sm text-muted-foreground mb-3">
-                      <span className="flex items-center gap-1">
-                        <Calendar size={14} />
-                        {new Date(post.date).toLocaleDateString()}
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock size={14} />
-                        {post.readTime}
-                      </span>
-                    </div>
-                    <h3 className="text-xl font-semibold mb-2 group-hover:text-primary transition-colors">
-                      {post.title}
-                    </h3>
-                    <p className="text-muted-foreground mb-4">
-                      {post.excerpt}
-                    </p>
-                    <div className="flex items-center justify-between">
-                      <div className="flex gap-2">
+                <Link to={`/blog/${post.slug}`}>
+                  <div className="glass-card rounded-2xl overflow-hidden transition-all duration-300 hover:shadow-xl border border-gray-200/50 dark:border-gray-700/50">
+                    <div className="relative h-56 overflow-hidden">
+                      <img 
+                        src={post.image} 
+                        alt={post.title}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
+                      
+                      {/* Tags positioned over image */}
+                      <div className="absolute bottom-4 left-4 flex flex-wrap gap-2">
                         {post.tags.map(tag => (
                           <span 
                             key={tag}
-                            className="text-xs px-2 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-muted-foreground"
+                            className="text-xs px-3 py-1 rounded-full 
+                              bg-white/90 dark:bg-gray-900/90 
+                              text-primary dark:text-primary-foreground
+                              backdrop-blur-sm border border-primary/10
+                              font-medium"
                           >
                             {tag}
                           </span>
                         ))}
                       </div>
-                      <Link
-                        to={`/blog/${post.slug}`}
-                        className="text-primary hover:scale-105 transition-transform"
-                      >
-                        <ArrowRight size={20} />
-                      </Link>
+                    </div>
+
+                    <div className="p-6">
+                      {/* Meta info with updated styling */}
+                      <div className="flex gap-4 text-sm text-muted-foreground mb-3">
+                        <span className="flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded-md">
+                          <Calendar size={14} className="text-primary" />
+                          {new Date(post.date).toLocaleDateString()}
+                        </span>
+                        <span className="flex items-center gap-1.5 bg-muted/30 px-2 py-1 rounded-md">
+                          <Clock size={14} className="text-primary" />
+                          {post.readTime}
+                        </span>
+                      </div>
+
+                      {/* Title and excerpt */}
+                      <h3 className="text-xl font-semibold mb-3 group-hover:text-primary transition-colors">
+                        {post.title}
+                      </h3>
+                      <p className="text-muted-foreground line-clamp-2">
+                        {post.excerpt}
+                      </p>
+
+                      {/* Read more indicator */}
+                      <div className="mt-4 flex items-center gap-2 text-primary font-medium">
+                        Read more 
+                        <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" />
+                      </div>
                     </div>
                   </div>
-                </div>
+                </Link>
               </motion.article>
             ))}
           </div>

@@ -1,13 +1,12 @@
 ---
 title: "Zero to Coder: You, Me, and Cursor IDE"
-date: '2025-03-01'
-excerpt: I use AI tools to get people started coding, and beat the fear of complexity
+date: '2025-03-03'
+excerpt: I ran a workshop to get beginners coding using AI. Here's how it went.
 author:
   name: Jethro
   avatar: /me2.jpg
 tags:
-  - React
-  - Vite
+  - Teaching
   - Vercel
   - Cursor-IDE
   - Lovable.dev
