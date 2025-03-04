@@ -4,6 +4,7 @@ import { ArrowLeft, Calendar, Clock, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getBlogPost } from "../lib/blog";
 import type { BlogPost as BlogPostType } from "../lib/blog";
+import { Helmet } from "react-helmet-async";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -66,94 +67,131 @@ export default function BlogPost() {
     );
   }
 
+  // Create absolute URLs for OG tags
+  const siteUrl = "https://jethroreeve.co.uk";
+  const imageUrl = post.image.startsWith('http') 
+    ? post.image 
+    : `${siteUrl}${post.image}`;
+  const fallbackImage = `${siteUrl}/og-image.png`;
+  const canonicalUrl = `${siteUrl}/blog/${slug}`;
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
-      {/* Hero Section */}
-      <motion.section 
-        className="relative h-[60vh] flex items-center justify-center overflow-hidden"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.8 }}
-      >
-        <div className="absolute inset-0">
-          <img 
-            src={post.image} 
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
-        </div>
+    <>
+      <Helmet>
+        {/* Basic Meta Tags */}
+        <title>{post.title} | Jethro Reeve</title>
+        <meta name="description" content={post.excerpt} />
+        <link rel="canonical" href={canonicalUrl} />
         
-        <div className="container px-4 mx-auto relative z-10 text-white">
-          <Link 
-            to="/blog"
-            className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
-          >
-            <ArrowLeft size={20} />
-            Back to Blog
-          </Link>
-          
-          <motion.h1 
-            className="text-4xl md:text-6xl font-bold mb-4"
-            initial={{ y: 20 }}
-            animate={{ y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {post.title}
-          </motion.h1>
-
-          <motion.div 
-            className="flex items-center gap-6 text-white/80"
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.4 }}
-          >
-            <div className="flex items-center gap-2">
-              <img 
-                src={post.author.avatar} 
-                alt={post.author.name}
-                className="w-10 h-10 rounded-full object-cover"
-              />
-              <span>{post.author.name}</span>
-            </div>
-            <span className="flex items-center gap-1">
-              <Calendar size={16} />
-              {new Date(post.date).toLocaleDateString()}
-            </span>
-            <span className="flex items-center gap-1">
-              <Clock size={16} />
-              {post.readTime}
-            </span>
-          </motion.div>
-        </div>
-      </motion.section>
-
-      {/* Content Section */}
-      <section className="py-16">
-        <div className="container px-4 mx-auto">
-          <div className="max-w-3xl mx-auto">
-            <div className="flex gap-2 mb-8">
-              {post.tags.map(tag => (
-                <span 
-                  key={tag}
-                  className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-muted-foreground"
-                >
-                  <Tag size={14} className="inline mr-1" />
-                  {tag}
-                </span>
-              ))}
-            </div>
-            
-            <motion.div 
-              className="prose dark:prose-invert max-w-none"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              dangerouslySetInnerHTML={{ __html: post.content }}
+        {/* Open Graph Tags */}
+        <meta property="og:type" content="article" />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt} />
+        <meta property="og:image" content={imageUrl || fallbackImage} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="article:published_time" content={post.date} />
+        <meta property="article:author" content={post.author.name} />
+        {post.tags.map((tag, index) => (
+          <meta key={index} property="article:tag" content={tag} />
+        ))}
+        
+        {/* Twitter Card Tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt} />
+        <meta name="twitter:image" content={imageUrl} />
+      </Helmet>
+      
+      <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800">
+        {/* Hero Section */}
+        <motion.section 
+          className="relative h-[60vh] flex items-center justify-center overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8 }}
+        >
+          <div className="absolute inset-0">
+            <img 
+              src={post.image} 
+              alt={post.title}
+              className="w-full h-full object-cover"
             />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-black/80" />
           </div>
-        </div>
-      </section>
-    </div>
+          
+          <div className="container px-4 mx-auto relative z-10 text-white">
+            <Link 
+              to="/blog"
+              className="inline-flex items-center gap-2 text-white/80 hover:text-white mb-8 transition-colors"
+            >
+              <ArrowLeft size={20} />
+              Back to Blog
+            </Link>
+            
+            <motion.h1 
+              className="text-4xl md:text-6xl font-bold mb-4"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
+              transition={{ delay: 0.2 }}
+            >
+              {post.title}
+            </motion.h1>
+
+            <motion.div 
+              className="flex items-center gap-6 text-white/80"
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <div className="flex items-center gap-2">
+                <img 
+                  src={post.author.avatar} 
+                  alt={post.author.name}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <span>{post.author.name}</span>
+              </div>
+              <span className="flex items-center gap-1">
+                <Calendar size={16} />
+                {new Date(post.date).toLocaleDateString()}
+              </span>
+              <span className="flex items-center gap-1">
+                <Clock size={16} />
+                {post.readTime}
+              </span>
+            </motion.div>
+          </div>
+        </motion.section>
+
+        {/* Content Section */}
+        <section className="py-16">
+          <div className="container px-4 mx-auto">
+            <div className="max-w-3xl mx-auto">
+              <div className="flex gap-2 mb-8">
+                {post.tags.map(tag => (
+                  <span 
+                    key={tag}
+                    className="px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-sm text-muted-foreground"
+                  >
+                    <Tag size={14} className="inline mr-1" />
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              
+              <motion.div 
+                className="prose dark:prose-invert max-w-none"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.2 }}
+                dangerouslySetInnerHTML={{ __html: post.content }}
+              />
+            </div>
+          </div>
+        </section>
+      </div>
+    </>
   );
 } 
