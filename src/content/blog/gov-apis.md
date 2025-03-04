@@ -1,103 +1,72 @@
 ---
-title: "UK Gov "
-date: '2025-03-03'
-excerpt: I ran a workshop to get beginners coding using AI. Here's how it went.
+title: "UK Parliament Hansard API: A short list"
+date: '2025-02-28'
+excerpt: "The current endpoint for the UK Parliament Hansard API, plus limitations and more data sources."
 author:
   name: Jethro
   avatar: /me2.jpg
 tags:
-  - Teaching
-  - Vercel
-  - Cursor-IDE
-  - Lovable.dev
-  - Langchain/Pinecone
-image: /z2c.jpg
+  - Hansard
+  - Parliament.uk
+  - UK Parliament
+  - Hansard API
+  - Swagger
+image: https://upload.wikimedia.org/wikipedia/commons/3/3b/Houses_of_Parliament_in_2022_%28cropped%29.jpg
 ---
 
-## Teaching Mindset
+## The Official Hansard API
 
-When I started building [WhatGov](https://whatgov.co.uk) last year, I was exactly where my workshop participants started this weekend - typing frenetically into ChatGPT things like "What do I need to know to build an app?", and "Provide a comprehensive guide to Git for a beginner".
+The UK Parliament maintains an official Swagger API for accessing Hansard data:
 
-What rocket-propelled by learning was going to [Campaign Lab](campaignlab.uk), who make free and open-source tools for progressive organisations. I honestly hadn't thought much about campaigning (or even politics) before arriving, but it turns out they'd thought a lot about making it easy for programmers to give meaningful contributions to the ecosystem. I built the [Electoral Commission Assistant](https://ec.civita.co.uk/) by forking a pinecone/langchain repo I'd found online, then I built [Votespeaker](votespeaker.civita.co.uk) from scratch to get familiar with React and the OpenAI API. I'm told the latter was used by an MP throughout the July 2024 election campaign, and was (amazingly) relevant enough to present in front of a room full of backers just last week. 
+**[https://hansard-api.parliament.uk/swagger/ui/index#/](https://hansard-api.parliament.uk/swagger/ui/index#/)**
 
-<div class="testimonial-right">
+(I said it was a short list)
 
-> "Jethro's workshop and introduction to tools really helped me reduce the friction and frustration I've always had with building anything technical with code. The use of AI tools for generating leads for problem solving makes the process much more… solvable."  
-> — **Anonymous Participant**
+This API provides programmatic access to parliamentary debates, questions, and other proceedings.
 
-</div>
+## API Structure and Usage
 
-The hard thing to overcome when you start a new digital skill is the temptation to hide behind courses, and to dedicate valuable learning time figuring out the *best* way to learn. If the task involves typing and/or abstract thinking, it makes us think the answer can be found in MORE abstract thinking. 
+Debates in the API have unique UUIDs, with parent/child relationships for certain content types. Questions, in particular, are organised hierarchically.
 
-Yet, the solution is somehow obvious if you're learning a sport, a language, or a manual skill - you get better at the skill by... doing the skill. 
+### Example Request
 
-This isn't to say learning the context of coding tools - or doing an intensive coding course - is useless (This is the last thing an advocate for using AI to learn to code should be saying). But that the context is *best* learned by interacting with the system, and code is best understood by watching what happens when you tweak it to see what breaks. 
+```http
+GET https://hansard-api.parliament.uk/debates/debate/{uuid}.json
+```
 
-The hard challenge as I see it is getting over the desire to let your mind wander when you don't see an obvious route to your goal. But with AI tools you can take enormous leapfrogs towards your goal. It feels naughty. It feels exciting. So even if Claude wrote the whole darned thing, the rapid tangible results, and the feeling of 'I ~~built~~ ~~co-built~~ caused this' gave people enough of a thirst for more that the problem-solving mindset slipped in almost implicitly. 
+I've discovered some important limitations of the search endpoint:
 
-> "Got an error? Don't know how to host your app? You know what to ask, and it's not me!"
+- Results are limited to 4 items (matching the [official site search](https://hansard.parliament.uk/search))
+- Several filter parameters seem to work:
+  - Debate type filters (written statements, petitions, divisions) don't work
+  - The 'date' parameter is non-functional (use startdate/enddate instead)
+  - Probably more (:
 
-## Workshop Overview: 0 to Website in 90 minutes
+## Background
 
-I was kindly given the hall of [Newspeak House](https://newspeak.house) for the event. This was a last-minute switch from the comparatively small classroom, since the workshop was so oversubscribed!
+I had a lovely chat last week with the Director of Data & Technology at 
+the House of Commons Library. It was very enlightening. He also sent me 
+these [weeknotes](https://ukparliament.github.io/ontologies/meta/weeknotes/), which have entirely restored my faith in the humanity of the Parliament's developers. 
 
-<div class="testimonial-left">
+I mentioned a struggle I'd had when building [Whatgov](https://Whatgov.co.uk), which is that the swagger endpoints to get Hansard data aren't documented anywhere online. I was told about it by some friends in the government Incubator for AI ([I.AI](https://ai.gov.uk/)), and have since been passing it around Whatsapp group chats like an member's drunk texts about Donald Trump. 
 
-> "Good mix of solo dev & problem solving with support there. Turn up & don't be scared."  
-> — **Tom**, who built [Recipe-routine-saver.vercel.app](https://recipe-routine-saver.vercel.app)
+(I double checked for this post, and it turns out it's actually documented in an FOI [here](https://www.parliament.uk/globalassets/documents/foi/house-of-lords-foi-and-data-protection/foi-responses---calendar-year-2023/foi-4148---response.pdf))
 
-</div>
+He explained a previous plan by another team to replace this endpoint with another - clearly this plan made it exactly half-way to execution. 
 
-Most of the people who came had no coding experience whatsoever, though some had a little python or at least some digital skills using Wix and nocode. 
+## Additional Parliament Data Sources
 
-Helping me out was [Coefficient](coefficient.ai) CEO John Sandall, a friend and mentor who's very positive on using Cursor to boost his team's productivity. 
+If you're working with UK Parliamentary data, these official APIs may also be useful:
 
-<div class="learning-path">
+- [Oral Questions and Motions](https://oralquestionsandmotions-api.parliament.uk) - Access to oral questions and early day motions
+- [Bills and Amendments](https://bills-api.parliament.uk/index.html) - Track ongoing bills and their amendments
+- [Committee Information](https://committees-api.parliament.uk/index.html) - Data on committee members and business
+- [Parliamentary Calendar](https://whatson-api.parliament.uk/calendar/events) - Upcoming and past parliamentary events
 
-### The Learning Path
+## More Government Data Resources
 
-The shift in teaching approach is that we came in from the 'top down' - starting with something that basically works, then guiding the AI with questions. 
+You might also enjoy [this side-quest.](https://github.com/i-dot-ai/awesome-gov-datasets). It's a set of broader UK government datasets published by some friends in the Incubator for AI. 
 
-The key here is that AI still makes tons of mistakes. Highlighting this at the start meant people didn't just sit back and do nothing - they stayed engaged to solve the inevitable problems. For this reason I gently discouraged using Cursor's agent mode, but it also seemed to be doing the job for some people.
+---
 
-| Step | Goals | Key Moments |
-|:------|:------|:-----------|
-| **Breaking the Ice** | • Prompt a website in [Lovable.dev](https://lovable.dev)<br>• Have a sense of owenership about something | • "I made this happen!"<br>• First Github commit |
-| **Cursor-IDE** | • Setting up Cursor IDE<br>• Learning Git basics | • "The AI tells me what to do"<br>• Overcoming installation hurdles   |
-| **Deployment** | • Hosting with Vercel<br>• Domain setup | • Live website moment<br>• The "aha!" experience |
-| **Beyond Basics** | • Intro to Supabase<br>• Database concepts | • Working at own pace<br>• Future learning paths |
-
-In reality, people moved at different speeds - the first were done in 90m, then people gradually got the finish line in clumps until everyone had a project hosted on Vercel. The main schism was getting git installed - myself and John (both Mac users) were taken by surprise discovering that Windows users needed to restart Cursor to get their terminal to recognise the git installation. Beyond that, the main obstacle was focus: Some people clearly came with the internal drive to get to the end goal fast. Others enjoyed the social side more (not unfamiliar from hackathons). 
-
-<div class="testimonial-right">
-
-> "Really accessible session, felt very well supported to learn how to code using AI. Very impressed."  
-> — **Alastair**, who created [Greater Manchester Assembly Helper](https://greater-manchester-assembly-helper.vercel.app/#)
-
-</div>
-
-Nonetheless, by the end of the session everyone had an app hosted on Vercel (A couple of attendees were happy to share theirs, which you can find below if they're still live).
-
-I encouraged the early finishers moved in their own direction, rather than tramline them to something specific. The most popular next step was databases, with one or two thinking about authentication. For both of these they ended up using Supabase, which also neatly integrates with Vercel. 
-
-</div>
-
-<div class="testimonial-left">
-
-> "I actually made something and feel I have the confidence to use AI tools to try and build! [...] Thank you Jethro."  
-> — **Workshop Participant**
-
-</div>
-
-In reality, people moved at different speeds - the first were done in 90m, then people gradually got the finish line in clumps until everyone had a project hosted on Vercel. The main schism was getting git installed - myself and John (both Mac users) were taken by surprise discovering that Windows users needed to restart Cursor to get their terminal to recognise the git installation. Beyond that, the main obstacle was focus: Some people clearly came with the internal drive to get to the end goal fast. Others enjoyed the social side more (not unfamiliar from hackathons). 
-
-## My Key Takeaways 
-
-• This format works! There's potential here for a community<br>• I need a presentation (or similar) to give structure and keep people on track<br>• People need a little more direction/ structure in the second half<br>• People would be happy to pay for this<br>• Windows users to restart their IDE to get Git working.
-
-## What's Next
-
-Given the enthusiastic feedback and suggestions to monetize future sessions, I'm planning to:
-- Run these regularly
-- Add intermediate workshops/co-working sessions
-- Create online resources
+If this was useful... [follow me on X](https://x.com/JethroJethroR) or [find me around](https://www.campaignlab.uk/).
