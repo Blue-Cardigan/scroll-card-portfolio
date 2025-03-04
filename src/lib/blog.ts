@@ -32,7 +32,7 @@ function calculateReadTime(content: string): string {
 // Updated glob configuration with better caching
 const posts = import.meta.glob('../content/blog/*.md', { 
   eager: true,
-  as: 'raw'
+  query: '?raw', import: 'default'
 });
 
 // Remove gray-matter dependency and implement a simpler frontmatter parser
