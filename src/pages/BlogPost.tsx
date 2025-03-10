@@ -68,7 +68,7 @@ export default function BlogPost() {
   }
 
   // Create absolute URLs for OG tags
-  const siteUrl = "https://jethroreeve.co.uk";
+  const siteUrl = "https://www.jethroreeve.co.uk";
   const imageUrl = post.image.startsWith('http') 
     ? post.image 
     : `${siteUrl}${post.image}`;

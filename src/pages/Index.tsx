@@ -7,29 +7,53 @@ import { Helmet } from 'react-helmet-async';
 
 const Index = () => {
   // You can customize these values or pull them from a config
-  const title = "Jethro Reeve - Full Stack Developer";
+  const title = "Jethro Reeve | Full Stack Developer & Political Technology Specialist";
   const description = "Full Stack Developer & Political Technology Specialist with expertise in React, TypeScript, and political technology solutions.";
   const siteUrl = "https://jethroreeve.co.uk";
+  const keywords = "Full Stack Developer, Political Technology, React, TypeScript, Web Development, Software Engineer";
   
   return (
     <>
       <Helmet>
         <title>{title}</title>
         <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
         <link rel="canonical" href={siteUrl} />
         
         {/* Open Graph Tags */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content={siteUrl} />
+        <meta property="og:site_name" content="Jethro Reeve" />
         <meta property="og:title" content={title} />
         <meta property="og:description" content={description} />
         <meta property="og:image" content={`${siteUrl}/og-image.png`} />
+        <meta property="og:image:width" content="1200" />
+        <meta property="og:image:height" content="630" />
+        <meta property="og:locale" content="en_GB" />
         
         {/* Twitter Card Tags */}
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={title} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={`${siteUrl}/og-image.png`} />
+        <meta name="twitter:creator" content="@JethroReeve" />
+        
+        {/* Structured Data - Person */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "Person",
+            "name": "Jethro Reeve",
+            "url": siteUrl,
+            "image": `${siteUrl}/me.png`,
+            "jobTitle": "Full Stack Developer",
+            "description": "Full Stack Developer & Political Technology Specialist",
+            "sameAs": [
+              "https://github.com/jethro-reeve",
+              "https://linkedin.com/in/jethro-reeve"
+            ]
+          })}
+        </script>
       </Helmet>
       
       <div className="min-h-screen bg-gradient-to-b from-slate-50 to-white dark:from-slate-900 dark:to-slate-800 sepia:from-[#fdf6e3] sepia:to-[#faf7ed]">

@@ -1,8 +1,21 @@
+# Global rules for all crawlers
 User-agent: *
 Allow: /
+Disallow: /assets/
+Disallow: /*.json$
 
-# Allow all crawlers
-Sitemap: https://jethroreeve.co.uk/sitemap.xml
+# Specific rules for major search engines
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
 
-# Crawl-delay for all bots
-Crawl-delay: 10 
+User-agent: Bingbot
+Allow: /
+Crawl-delay: 2
+
+User-agent: Slurp
+Allow: /
+Crawl-delay: 3
+
+# Sitemap location
+Sitemap: https://jethroreeve.co.uk/sitemap.xml 
