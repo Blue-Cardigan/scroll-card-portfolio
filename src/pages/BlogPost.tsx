@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { getBlogPost } from "../lib/blog";
 import type { BlogPost as BlogPostType } from "../lib/blog";
 import { Helmet } from "react-helmet-async";
+import PDFDownload from "../components/PDFDownload";
 
 export default function BlogPost() {
   const { slug } = useParams<{ slug: string }>();
@@ -69,9 +70,9 @@ export default function BlogPost() {
 
   // Create absolute URLs for OG tags
   const siteUrl = "https://jethroreeve.co.uk";
-  const imageUrl = post.image.startsWith('http') 
+  const imageUrl = post.image && typeof post.image === 'string' && post.image.startsWith('http') 
     ? post.image 
-    : `${siteUrl}${post.image}`;
+    : `${siteUrl}${post.image || '/og-image.png'}`;
   const fallbackImage = `${siteUrl}/og-image.png`;
   const canonicalUrl = `${siteUrl}/blog/${slug}`;
 
@@ -114,7 +115,7 @@ export default function BlogPost() {
         >
           <div className="absolute inset-0">
             <img 
-              src={post.image} 
+              src={post.image || fallbackImage} 
               alt={post.title}
               className="w-full h-full object-cover"
             />
@@ -147,7 +148,7 @@ export default function BlogPost() {
             >
               <div className="flex items-center gap-2">
                 <img 
-                  src={post.author.avatar} 
+                  src={post.author.avatar || fallbackImage} 
                   alt={post.author.name}
                   className="w-10 h-10 rounded-full object-cover"
                 />
@@ -188,6 +189,22 @@ export default function BlogPost() {
                 transition={{ delay: 0.2 }}
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
+
+              {/* Add PDF download section if the post has a PDF */}
+              {post.content.includes('/papers/') && (
+                <motion.div
+                  className="mt-8 p-6 bg-slate-50 dark:bg-slate-800 rounded-lg"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 }}
+                >
+                  <h3 className="text-xl font-semibold mb-4">Download Paper</h3>
+                  <PDFDownload 
+                    title={post.title}
+                    url={`/papers/${post.slug}.pdf`}
+                  />
+                </motion.div>
+              )}
             </div>
           </div>
         </section>
